@@ -1,0 +1,10 @@
+*~
+.\#*
+\#*
+\#.*
+/eigen33/
+*.o
+*.exe
+sample
+sample-non_weighted
+sample-weighted
