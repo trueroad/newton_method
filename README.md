@@ -29,7 +29,9 @@ There are three samples.
 
 All samples are position calculation like GPS/GNSS receiver.
 The coordinates, distances, weights etc. used in the samples
-are based on the document [1].
+are based on the document [1]
+([Sample program's data](./doc/sample-data.md))
+.
 The calculation formulas and processing used in these samples
 are different from the document [1].
 
