@@ -25,7 +25,7 @@ There are three samples.
 * Overdetermined system, non weighted
     + [sample-non_weighted.cc](./sample-non_weighted.cc)
 * Overdetermined system, weighted
-    + [sample-weighted.cc](./samplen-weighted.cc)
+    + [sample-weighted.cc](./sample-weighted.cc)
 
 All samples are position calculation like GPS/GNSS receiver.
 The coordinates, distances, weights etc. used in the samples

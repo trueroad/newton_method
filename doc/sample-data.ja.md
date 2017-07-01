@@ -16,7 +16,7 @@
 * 最小二乗法を使ったサンプル（重み無し）
     + [sample-non_weighted.cc](../sample-non_weighted.cc)
 * 最小二乗法を使ったサンプル（重み付き）
-    + [sample-weighted.cc](../samplen-weighted.cc)
+    + [sample-weighted.cc](../sample-weighted.cc)
 
 は、いずれもGPS衛星の座標と距離からGPS受信機の位置を計算する、
 というものになっています。
@@ -321,7 +321,7 @@ Error distance:
 最後に重み付きの場合についてです。
 
 * 最小二乗法を使ったサンプル（重み付き）
-    + [sample-weighted.cc](../samplen-weighted.cc)
+    + [sample-weighted.cc](../sample-weighted.cc)
 
 #### パッチ
 
@@ -335,7 +335,7 @@ Error distance:
 その構造のまま表示する機能だけを追加したため、
 1回の測位計算で複数回（イテレーションの数）同じものが表示されてしまいます。
 
-```
+```diff
 --- positioning.c.org	2003-07-22 19:23:35.000000000 +0900
 +++ positioning.c	2017-06-24 23:35:17.423923400 +0900
 @@ -86,6 +86,34 @@

@@ -25,7 +25,7 @@
 * 最小二乗法を使ったサンプル（重み無し）
     + [sample-non_weighted.cc](./sample-non_weighted.cc)
 * 最小二乗法を使ったサンプル（重み付き）
-    + [sample-weighted.cc](./samplen-weighted.cc)
+    + [sample-weighted.cc](./sample-weighted.cc)
 
 いずれのサンプルも、GPS衛星の座標と距離からGPS受信機の位置を計算する、
 というものになっています。
