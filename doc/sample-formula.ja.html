@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="細田 真道">
+  <title>サンプルプログラムの計算式について</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="github-markdown.css">
+<style>
+	.markdown-body {
+		box-sizing: border-box;
+		min-width: 200px;
+		max-width: 980px;
+		margin: 0 auto;
+		padding: 45px;
+	}
+
+	@media (max-width: 767px) {
+		.markdown-body {
+			padding: 15px;
+		}
+	}
+</style>
+  <script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML-full" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body class="markdown-body">
+<!-- -*- coding: utf-8 -*- -->
+<hr />
+<p>[ 日本語 / <a href="./sample-formula.html">英語 (English)</a> ]</p>
+<p><a href="https://github.com/trueroad/newton_method/blob/master/README.ja.md">連立方程式を解くニュートン法ライブラリ</a> &gt; サンプルプログラムの計算式について</p>
+<hr />
+<header>
+<h1 class="title">サンプルプログラムの計算式について</h1>
+<p class="author">細田 真道</p>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#はじめに"><span class="toc-section-number">1</span> はじめに</a></li>
+<li><a href="#計算式"><span class="toc-section-number">2</span> 計算式</a><ul>
+<li><a href="#衛星の座標と距離"><span class="toc-section-number">2.1</span> 衛星の座標と距離</a><ul>
+<li><a href="#座標"><span class="toc-section-number">2.1.1</span> 座標</a></li>
+<li><a href="#距離"><span class="toc-section-number">2.1.2</span> 距離</a></li>
+<li><a href="#方程式"><span class="toc-section-number">2.1.3</span> 方程式</a></li>
+</ul></li>
+<li><a href="#関数の準備"><span class="toc-section-number">2.2</span> 関数の準備</a><ul>
+<li><a href="#f"><span class="toc-section-number">2.2.1</span> F</a></li>
+<li><a href="#j"><span class="toc-section-number">2.2.2</span> J</a></li>
+</ul></li>
+<li><a href="#ニュートン法"><span class="toc-section-number">2.3</span> ニュートン法</a></li>
+<li><a href="#最小二乗法"><span class="toc-section-number">2.4</span> 最小二乗法</a><ul>
+<li><a href="#重み無し"><span class="toc-section-number">2.4.1</span> 重み無し</a></li>
+<li><a href="#重み付き"><span class="toc-section-number">2.4.2</span> 重み付き</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#サンプルプログラム"><span class="toc-section-number">3</span> サンプルプログラム</a><ul>
+<li><a href="#最小二乗法を使わないサンプル"><span class="toc-section-number">3.1</span> 最小二乗法を使わないサンプル</a><ul>
+<li><a href="#衛星座標"><span class="toc-section-number">3.1.1</span> 衛星座標</a></li>
+<li><a href="#距離-1"><span class="toc-section-number">3.1.2</span> 距離</a></li>
+<li><a href="#受信機座標正解データ"><span class="toc-section-number">3.1.3</span> 受信機座標（正解データ）</a></li>
+<li><a href="#計算打ち切り条件"><span class="toc-section-number">3.1.4</span> 計算打ち切り条件</a></li>
+<li><a href="#補助関数"><span class="toc-section-number">3.1.5</span> 補助関数</a></li>
+<li><a href="#f-1"><span class="toc-section-number">3.1.6</span> F</a></li>
+<li><a href="#j-1"><span class="toc-section-number">3.1.7</span> J</a></li>
+<li><a href="#計算"><span class="toc-section-number">3.1.8</span> 計算</a></li>
+<li><a href="#結果表示"><span class="toc-section-number">3.1.9</span> 結果表示</a></li>
+<li><a href="#実行結果"><span class="toc-section-number">3.1.10</span> 実行結果</a></li>
+</ul></li>
+<li><a href="#最小二乗法を使ったサンプル重み無し"><span class="toc-section-number">3.2</span> 最小二乗法を使ったサンプル（重み無し）</a><ul>
+<li><a href="#衛星座標-1"><span class="toc-section-number">3.2.1</span> 衛星座標</a></li>
+<li><a href="#距離-2"><span class="toc-section-number">3.2.2</span> 距離</a></li>
+<li><a href="#その他"><span class="toc-section-number">3.2.3</span> その他</a></li>
+<li><a href="#実行結果-1"><span class="toc-section-number">3.2.4</span> 実行結果</a></li>
+</ul></li>
+<li><a href="#最小二乗法を使ったサンプル重み付き"><span class="toc-section-number">3.3</span> 最小二乗法を使ったサンプル（重み付き）</a><ul>
+<li><a href="#重み行列"><span class="toc-section-number">3.3.1</span> 重み行列</a></li>
+<li><a href="#受信機座標正解データ-1"><span class="toc-section-number">3.3.2</span> 受信機座標（正解データ）</a></li>
+<li><a href="#計算-1"><span class="toc-section-number">3.3.3</span> 計算</a></li>
+<li><a href="#その他-1"><span class="toc-section-number">3.3.4</span> その他</a></li>
+<li><a href="#実行結果-2"><span class="toc-section-number">3.3.5</span> 実行結果</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#参考文献"><span class="toc-section-number">4</span> 参考文献</a></li>
+<li><a href="#license"><span class="toc-section-number">5</span> License</a></li>
+</ul>
+</nav>
+<!-- -*- coding: utf-8 -*- -->
+<h1 id="はじめに"><span class="header-section-number">1</span> はじめに</h1>
+<p><a href="https://github.com/trueroad/newton_method">本ライブラリ</a> の三種類のサンプルプログラム</p>
+<ul>
+<li>最小二乗法を使わないサンプル
+<ul>
+<li><a href="https://github.com/trueroad/newton_method/blob/master/sample.cc">sample.cc</a></li>
+</ul></li>
+<li>最小二乗法を使ったサンプル（重み無し）
+<ul>
+<li><a href="https://github.com/trueroad/newton_method/blob/master/sample-non_weighted.cc">sample-non_weighted.cc</a></li>
+</ul></li>
+<li>最小二乗法を使ったサンプル（重み付き）
+<ul>
+<li><a href="https://github.com/trueroad/newton_method/blob/master/sample-weighted.cc">sample-weighted.cc</a></li>
+</ul></li>
+</ul>
+<p>は、いずれもGPS衛星の座標と距離からGPS受信機の位置を計算する、 というものになっています。 基本的な考え方は文献[1]に拠っていますが、使用している計算式は異なります。 ここでは、サンプルプログラムで使用している計算式と、 その計算式を使ったサンプルプログラムの処理について説明します。 サンプルプログラムで使用している座標、距離、重み等のデータについては <a href="https://github.com/trueroad/newton_method/blob/master/doc/sample-data.ja.md">サンプルプログラムのデータについて</a> をご覧ください。</p>
+<h1 id="計算式"><span class="header-section-number">2</span> 計算式</h1>
+<h2 id="衛星の座標と距離"><span class="header-section-number">2.1</span> 衛星の座標と距離</h2>
+<p>GPS は 4 つ以上の GPS 衛星の位置を既知、 それぞれの衛星から GPS 受信機までの距離を既知、 として未知である GPS 受信機の位置を求めるものです。</p>
+<h3 id="座標"><span class="header-section-number">2.1.1</span> 座標</h3>
+<p><span class="math inline">\(n\)</span> 個の衛星の座標（既知）を <span class="math inline">\(S_i \left( x_i, y_i, z_i \right)\)</span>, <span class="math inline">\(\left( i = 1, 2, ..., n \right)\)</span> として、受信機の座標（未知）を <span class="math inline">\(P \left( x_{\mathrm{p}}, y_{\mathrm{p}}, z_{\mathrm{p}} \right)\)</span> とします。</p>
+<h3 id="距離"><span class="header-section-number">2.1.2</span> 距離</h3>
+<p>各衛星から受信機までの距離は、 誤差を含んだ仮の距離（疑似距離）として計測されます（既知）。 これを <span class="math inline">\(R_i\)</span> とします。 一方、衛星と受信機の真の距離は</p>
+<p><span class="math display">\[
+\sqrt{ \left( x_i - x_{\mathrm{p}} \right)^2
++ \left( y_i - y_{\mathrm{p}} \right)^2
++ \left( z_i - z_{\mathrm{p}} \right)^2 }
+\]</span></p>
+<p>となります。 この、真の距離と疑似距離との差は 受信機の時計オフセット（未知）によるものとなります。 これを <span class="math inline">\(\Delta S\)</span> で表すと、</p>
+<p><span id="eq:distance_relation"><span class="math display">\[
+R_i =
+\sqrt{ \left( x_i - x_{\mathrm{p}} \right)^2
++ \left( y_i - y_{\mathrm{p}} \right)^2
++ \left( z_i - z_{\mathrm{p}} \right)^2 }
++ \Delta S
+\qquad(1)\]</span></span></p>
+<p>という関係があることになります。</p>
+<h3 id="方程式"><span class="header-section-number">2.1.3</span> 方程式</h3>
+<p>未知数は <span class="math inline">\(x_{\mathrm{p}}\)</span>, <span class="math inline">\(y_{\mathrm{p}}\)</span>, <span class="math inline">\(z_{\mathrm{p}}\)</span>, <span class="math inline">\(\Delta S\)</span> の 4 個ですので、 衛星が4個あれば、式 (1) より、</p>
+<p><span class="math display">\[
+\left\{
+\begin{array}{l}
+R_1 =
+\sqrt{ \left( x_1 - x_{\mathrm{p}} \right)^2
++ \left( y_1 - y_{\mathrm{p}} \right)^2
++ \left( z_1 - z_{\mathrm{p}} \right)^2 }
++ \Delta S \\
+R_2 =
+\sqrt{ \left( x_2 - x_{\mathrm{p}} \right)^2
++ \left( y_2 - y_{\mathrm{p}} \right)^2
++ \left( z_2 - z_{\mathrm{p}} \right)^2 }
++ \Delta S \\
+R_3 =
+\sqrt{ \left( x_3 - x_{\mathrm{p}} \right)^2
++ \left( y_3 - y_{\mathrm{p}} \right)^2
++ \left( z_3 - z_{\mathrm{p}} \right)^2 }
++ \Delta S \\
+R_4 =
+\sqrt{ \left( x_4 - x_{\mathrm{p}} \right)^2
++ \left( y_4 - y_{\mathrm{p}} \right)^2
++ \left( z_4 - z_{\mathrm{p}} \right)^2 }
++ \Delta S
+\end{array}
+\right.
+\]</span></p>
+<p>という連立方程式を解くことによって受信機の座標 <span class="math inline">\(P \left( x_{\mathrm{p}}, y_{\mathrm{p}}, z_{\mathrm{p}} \right)\)</span> および真の距離と疑似距離の誤差 <span class="math inline">\(\Delta S\)</span> を求めることができます。 しかし、この方程式は非線形であるため、解析的に解を得ることは困難です。 そこでニュートン法で近似解を得る方法をとります。</p>
+<h2 id="関数の準備"><span class="header-section-number">2.2</span> 関数の準備</h2>
+<p>本ライブラリでは、解きたい連立方程式について、ベクトル関数の形で表した <span class="math inline">\({\boldsymbol{F}}\)</span> と、そのヤコビ行列 <span class="math inline">\({\boldsymbol{J}}\)</span> を用意する必要があります。</p>
+<h3 id="f"><span class="header-section-number">2.2.1</span> F</h3>
+<p>まず、式 (1) を以下のように関数の形に書き換えます。</p>
+<p><span id="eq:function_i"><span class="math display">\[
+f_i \left( x, y, z, \Delta S \right) =
+\sqrt{ \left( x_i - x \right)^2
++ \left( y_i - y \right)^2
++ \left( z_i - z \right)^2 }
++ \Delta S - R_i
+\qquad(2)\]</span></span></p>
+<p>そうすると、解くべき方程式は</p>
+<p><span class="math display">\[
+f_i \left( x_{\mathrm{p}}, y_{\mathrm{p}}, z_{\mathrm{p}}, \Delta S \right) = 0
+\]</span></p>
+<p>となります。これをベクトルの形で書き直すことにします。</p>
+<p><span id="eq:vector_F"><span class="math display">\[
+{\boldsymbol{F}} \left( {\boldsymbol{X}} \right) =
+\left(
+\begin{array}{c}
+f_1 \left( x, y, z, \Delta S \right) \\
+f_2 \left( x, y, z, \Delta S \right) \\
+\vdots \\
+f_n \left( x, y, z, \Delta S \right)
+\end{array}
+\right)
+\qquad(3)\]</span></span></p>
+<p>ただし、</p>
+<p><span class="math display">\[
+{\boldsymbol{X}} =
+\left(
+\begin{array}{c}
+x \\
+y \\
+z \\
+\Delta S
+\end{array}
+\right)
+,
+{\boldsymbol{0}} =
+\left(
+\begin{array}{c}
+0 \\
+0 \\
+\vdots \\
+0
+\end{array}
+\right)
+\]</span></p>
+<p>とします。 すると、解くべき方程式は、</p>
+<p><span id="eq:vector_equation"><span class="math display">\[
+{\boldsymbol{F}} \left( {\boldsymbol{X}} \right) = {\boldsymbol{0}}
+\qquad(4)\]</span></span></p>
+<p>になります。</p>
+<h3 id="j"><span class="header-section-number">2.2.2</span> J</h3>
+<p>次に、ここからヤコビ行列 <span class="math inline">\({\boldsymbol{J}}\)</span> を導きます。 ヤコビ行列は、</p>
+<p><span class="math display">\[
+{\boldsymbol{J}} = \frac{\partial {\boldsymbol{F}}}{\partial {\boldsymbol{X}}}
+\]</span></p>
+<p>なので、成分で表すと、</p>
+<p><span id="eq:J"><span class="math display">\[
+{\boldsymbol{J}} \left( {\boldsymbol{X}} \right) =
+\left(
+\begin{array}{cccc}
+\frac{\partial f_1}{\partial x} &amp; \frac{\partial f_1}{\partial y} &amp;
+\frac{\partial f_1}{\partial z} &amp; \frac{\partial f_1}{\partial \Delta S} \\
+\frac{\partial f_2}{\partial x} &amp; \frac{\partial f_2}{\partial y} &amp;
+\frac{\partial f_2}{\partial z} &amp; \frac{\partial f_2}{\partial \Delta S} \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots \\
+\frac{\partial f_n}{\partial x} &amp; \frac{\partial f_n}{\partial y} &amp;
+\frac{\partial f_n}{\partial z} &amp; \frac{\partial f_n}{\partial \Delta S}
+\end{array}
+\right)
+\qquad(5)\]</span></span></p>
+<p>となります。各成分は式 (2) を偏微分して、</p>
+<p><span class="math display">\[
+\frac{\partial f_i}{\partial x}
+=
+\frac{- \left( x_i - x \right) }{\sqrt{
+\left( x_i - x \right)^2 +
+\left( y_i - y \right)^2 +
+\left( z_i - z \right)^2
+}}
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial f_i}{\partial y}
+=
+\frac{- \left( y_i - y \right) }{\sqrt{
+\left( x_i - x \right)^2 +
+\left( y_i - y \right)^2 +
+\left( z_i - z \right)^2
+}}
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial f_i}{\partial z}
+=
+\frac{- \left( z_i - z \right) }{\sqrt{
+\left( x_i - x \right)^2 +
+\left( y_i - y \right)^2 +
+\left( z_i - z \right)^2
+}}
+\]</span></p>
+<p><span class="math display">\[
+\frac{\partial f_i}{\partial \Delta S} = 1
+\]</span></p>
+<p>となります。</p>
+<h2 id="ニュートン法"><span class="header-section-number">2.3</span> ニュートン法</h2>
+<p>ここでは、ライブラリ本体 <a href="https://github.com/trueroad/newton_method/blob/master/newton.hh">newton.hh</a> / <a href="https://github.com/trueroad/newton_method/blob/master/newton.cc">newton.cc</a> のニュートン法の処理を簡単に紹介します。 ニュートン法では、まず、 解の候補となる初期値 <span class="math inline">\({\boldsymbol{X}}_0\)</span> を適当に決めます。</p>
+<p><span id="eq:X0"><span class="math display">\[
+{\boldsymbol{X}}_0 =
+\left(
+\begin{array}{c}
+x^{(0)} \\
+y^{(0)} \\
+z^{(0)} \\
+\Delta S^{(0)}
+\end{array}
+\right)
+\qquad(6)\]</span></span></p>
+<p>そして <span class="math inline">\({\boldsymbol{F}} \left( {\boldsymbol{X}}_0 \right)\)</span> と <span class="math inline">\({\boldsymbol{J}} \left( {\boldsymbol{X}}_0 \right)\)</span> から、次の解の候補 <span class="math inline">\({\boldsymbol{X}}_1\)</span> への修正値 <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> を計算します。</p>
+<p><span class="math display">\[
+\Delta {\boldsymbol{X}} =
+\left(
+\begin{array}{c}
+\Delta x \\
+\Delta y \\
+\Delta z \\
+\Delta s
+\end{array}
+\right)
+\]</span></p>
+<p>これを一般化して、<span class="math inline">\(k\)</span> 番目の解の候補を <span class="math inline">\({\boldsymbol{X}}_k\)</span> とします。</p>
+<p><span class="math display">\[
+{\boldsymbol{X}}_k =
+\left(
+\begin{array}{c}
+x^{(k)} \\
+y^{(k)} \\
+z^{(k)} \\
+\Delta S^{(k)}
+\end{array}
+\right)
+\]</span></p>
+<p>そして、<span class="math inline">\({\boldsymbol{F}} \left( {\boldsymbol{X}}_k \right)\)</span> と <span class="math inline">\({\boldsymbol{J}} \left( {\boldsymbol{X}}_k \right)\)</span> を使って、次の解の候補への修正値 <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> を求め、 <span class="math inline">\(k + 1\)</span> 番目の解の候補を求める、ということを繰り返します。 具体的には、 <span class="math inline">\({\boldsymbol{J}}\)</span> が正方行列であれば、つまり、衛星が4個であれば、</p>
+<p><span id="eq:deltaX_equation"><span class="math display">\[
+{\boldsymbol{J}} \left( {\boldsymbol{X}}_k \right) \Delta {\boldsymbol{X}} =
+- {\boldsymbol{F}} \left( {\boldsymbol{X}}_k \right)
+\qquad(7)\]</span></span></p>
+<p>を <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> について解くことになります。 これは数学的には逆行列を使えば求めることができます。</p>
+<p><span class="math display">\[
+\Delta {\boldsymbol{X}} = - \left( {\boldsymbol{J}} \left( {\boldsymbol{X}}_k \right) \right)^{-1}
+{\boldsymbol{F}} \left( {\boldsymbol{X}}_k \right)
+\]</span></p>
+<p>しかし、この方法は数値計算的には効率が悪く、また、 演算結果が安定しない等の問題があるとされているため、 本ライブラリではここで逆行列によらず連立一次方程式を解く アルゴリズムを使っています。 つまり、<span class="math inline">\({\boldsymbol{A}} = {\boldsymbol{J}} \left( {\boldsymbol{X}}_k \right)\)</span>, <span class="math inline">\({\boldsymbol{x}} = \Delta {\boldsymbol{X}}\)</span>, <span class="math inline">\({\boldsymbol{b}} = - {\boldsymbol{F}} \left( {\boldsymbol{X}}_k \right)\)</span> と置いて、連立一次方程式</p>
+<p><span id="eq:simultaneous_linear_equation"><span class="math display">\[
+{\boldsymbol{A}} {\boldsymbol{x}} = {\boldsymbol{b}}
+\qquad(8)\]</span></span></p>
+<p>を <span class="math inline">\({\boldsymbol{x}}\)</span> について解くアルゴリズムを使います。 そして、これにより求めた <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> を使って次の近似解 <span class="math inline">\({\boldsymbol{X}}_{k+1}\)</span> を求める、</p>
+<p><span class="math display">\[
+{\boldsymbol{X}}_{k + 1} = {\boldsymbol{X}}_k + \Delta {\boldsymbol{X}}
+\]</span></p>
+<p>という操作を繰り返し行い、 解の候補を真の解に順次近づけていきます。 このとき、一定の誤差 <span class="math inline">\(\varepsilon\)</span> を決めておき、</p>
+<p><span id="eq:F_epsilon"><span class="math display">\[
+\left\| {\boldsymbol{F}} \left( {\boldsymbol{X}}_k \right) \right\| &lt; \varepsilon
+\qquad(9)\]</span></span></p>
+<p>を満たした場合や</p>
+<p><span id="eq:deltaX_epsilon"><span class="math display">\[
+\left\|
+\begin{array}{c}
+\frac{\Delta x}{x^{(k)}} \\
+\frac{\Delta y}{y^{(k)}} \\
+\frac{\Delta z}{z^{(k)}} \\
+\frac{\Delta s}{\Delta S^{(k)}}
+\end{array}
+\right\|
+&lt; \varepsilon
+\qquad(10)\]</span></span></p>
+<p>を満たした場合に計算を打ち切り <span class="math inline">\({\boldsymbol{X}}_k\)</span> を近似解として出力します。</p>
+<h2 id="最小二乗法"><span class="header-section-number">2.4</span> 最小二乗法</h2>
+<p>ここでは、ライブラリ本体 <a href="https://github.com/trueroad/newton_method/blob/master/newton.hh">newton.hh</a> / <a href="https://github.com/trueroad/newton_method/blob/master/newton.cc">newton.cc</a> の最小二乗法の処理を簡単に紹介します。 衛星が4個よりも多いとき、ヤコビ行列 <span class="math inline">\({\boldsymbol{J}}\)</span> は縦長となり、 正方行列ではなくなるため、式 (7) が計算できなくなります。 こういうときに、測定値には誤差があることを前提にして、 最小二乗法を使います。</p>
+<h3 id="重み無し"><span class="header-section-number">2.4.1</span> 重み無し</h3>
+<p>いずれの測定値も誤差が同じである場合や、 誤差の情報が無い場合には、すべて平等に誤差があるとして「重み無し」の 最小二乗法を使います。 数学の教科書的には、式 (7) の代わりに、正規方程式</p>
+<p><span id="eq:normal_equation"><span class="math display">\[
+\left( {\boldsymbol{J}}^{\top} {\boldsymbol{J}} \right) \Delta {\boldsymbol{X}} =
+- {\boldsymbol{J}}^{\top} {\boldsymbol{F}}
+\qquad(11)\]</span></span></p>
+<p>を使えば、重み無しの最小二乗法が適用できます。 ただし、この方法は数値計算的には結果が悪くなるので、 正規方程式を使わない方がよいとされています [1-4] 。 本ライブラリがデフォルトで使用する連立一次方程式を解くアルゴリズムは <span class="math inline">\({\boldsymbol{J}}\)</span> が縦長の時、 つまり式 (8) で <span class="math inline">\({\boldsymbol{A}}\)</span> が 縦長であっても自動的に最小二乗法が適用された解<span class="math inline">\({\boldsymbol{x}}\)</span> が得られるもので、 正規方程式を使わずに <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> が得られます。</p>
+<h3 id="重み付き"><span class="header-section-number">2.4.2</span> 重み付き</h3>
+<p>各衛星からの測定値について、誤差が既知である場合に「重み付き」の 最小二乗法を使います。 重み付きの正規方程式を使う場合は、 各測定値の誤差の分散 <span class="math inline">\(\sigma_i{}^2\)</span> の逆数を使った対角行列</p>
+<p><span class="math display">\[
+{\boldsymbol{W}} =
+\left(
+\begin{array}{cccc}
+\frac{1}{\sigma_1{}^2} &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; \frac{1}{\sigma_2{}^2} &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; \frac{1}{\sigma_n{}^2}
+\end{array}
+\right)
+\]</span></p>
+<p>を重み行列として使い、 式 (11) の代わりに重み付きの正規方程式</p>
+<p><span class="math display">\[
+\left( {\boldsymbol{J}}^{\top} {\boldsymbol{W}} {\boldsymbol{J}} \right) \Delta {\boldsymbol{X}} =
+- {\boldsymbol{J}}^{\top} {\boldsymbol{W}} {\boldsymbol{F}}
+\]</span></p>
+<p>を使えばよいことになります。 もちろん、数値計算的には正規方程式を使わない方が良いとされます [1-4] 。 正規方程式を使わない方法としては、各測定値の誤差の標準偏差 <span class="math inline">\(\sigma_i\)</span> の逆数を使った対角行列</p>
+<p><span id="eq:Whalf"><span class="math display">\[
+{\boldsymbol{W}}^{\frac{1}{2}} =
+\left(
+\begin{array}{cccc}
+\frac{1}{\sigma_1} &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; \frac{1}{\sigma_2} &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; \frac{1}{\sigma_n}
+\end{array}
+\right)
+\qquad(12)\]</span></span></p>
+<p>を重み行列として使い、式 (7) の代わりに</p>
+<p><span id="eq:Whalf_equation"><span class="math display">\[
+\left( {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{J}} \right) \Delta {\boldsymbol{X}} =
+- {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{F}}
+\qquad(13)\]</span></span></p>
+<p>を使い、 <span class="math inline">\({\boldsymbol{A}} = {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{J}}\)</span>, <span class="math inline">\({\boldsymbol{x}} = \Delta {\boldsymbol{X}}\)</span>, <span class="math inline">\({\boldsymbol{b}} = - {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{F}}\)</span> と置いて、 重み無しと同様の <span class="math inline">\({\boldsymbol{A}}\)</span> が縦長でも式 (8) の連立一次方程式が解けるアルゴリズムを使い、解 <span class="math inline">\({\boldsymbol{x}}\)</span> 、 つまり <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> を得ます [1, 3] 。 本ライブラリではどちらの方法も使えますが、 サンプルプログラムは後者の正規方程式を使わない方法を使っています。</p>
+<h1 id="サンプルプログラム"><span class="header-section-number">3</span> サンプルプログラム</h1>
+<p>サンプルプログラムで使用している座標、距離、重み等のデータについては、 ここでは中身を示すだけにとどめ詳しい説明をしません。 これらの詳細は <a href="https://github.com/trueroad/newton_method/blob/master/doc/sample-data.ja.md">サンプルプログラムのデータについて</a> をご覧ください。</p>
+<h2 id="最小二乗法を使わないサンプル"><span class="header-section-number">3.1</span> 最小二乗法を使わないサンプル</h2>
+<p>以下、最小二乗法を使わないサンプル <a href="https://github.com/trueroad/newton_method/blob/master/sample.cc">sample.cc</a> からの抜粋です。</p>
+<h3 id="衛星座標"><span class="header-section-number">3.1.1</span> 衛星座標</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Satellite position (known, given from received data)</span>
+<span class="bu">std::</span>vector&lt;<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt;&gt; Si
+{
+  {   <span class="dv">-11327938</span>.<span class="dv">990000</span>,     <span class="fl">9886884.330000</span>,    <span class="fl">21895433.227000</span> },
+  {     <span class="fl">4755496.711000</span>,    <span class="fl">19362623.328000</span>,    <span class="fl">18112665.323000</span> },
+  {    <span class="dv">-7506201</span>.<span class="dv">243000</span>,    <span class="fl">24076860.073000</span>,     <span class="fl">7092793.940000</span> },
+  {   <span class="dv">-23085789</span>.<span class="dv">286000</span>,    <span class="fl">12409399.010000</span>,     <span class="fl">4602891.246000</span> },
+};</code></pre></div>
+<p>4 衛星の座標 <span class="math inline">\(S_i\)</span>, <span class="math inline">\(\left( i = 1, 2, 3, 4\right)\)</span> を設定しています。 <span class="math inline">\({\boldsymbol{F}}\)</span> を求める式 (3) や <span class="math inline">\({\boldsymbol{J}}\)</span> を求める式 (5) の計算に使います。</p>
+<h3 id="距離-1"><span class="header-section-number">3.1.2</span> 距離</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Observed distance (known, measurement result)</span>
+<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; Ri
+{
+     <span class="fl">20690632.972000</span>,
+     <span class="fl">23225588.018000</span>,
+     <span class="fl">21288081.687000</span>,
+     <span class="fl">21187099.471000</span>,
+};</code></pre></div>
+<p>それぞれの衛星から受信機までの距離 <span class="math inline">\(R_i\)</span>, <span class="math inline">\(\left( i = 1, 2, 3, 4\right)\)</span> を設定しています。 <span class="math inline">\({\boldsymbol{F}}\)</span> を求める式 (3) や <span class="math inline">\({\boldsymbol{J}}\)</span> を求める式 (5) の計算に使います。</p>
+<h3 id="受信機座標正解データ"><span class="header-section-number">3.1.3</span> 受信機座標（正解データ）</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Receiver position (actually unknown)</span>
+<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; unknown_P
+{
+   <span class="dv">-3947719</span>.<span class="dv">36876915</span>,   <span class="fl">3364403.46661849</span>,   <span class="fl">3699487.64248845</span>
+};</code></pre></div>
+<p>本ライブラリの計算結果が正しいか確かめるための正解データとする目的で、 文献[1]「（その3）」のプログラムを重み無しに設定して計算した座標です。 本ライブラリのニュートン法の計算には使いません。</p>
+<h3 id="計算打ち切り条件"><span class="header-section-number">3.1.4</span> 計算打ち切り条件</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Error epsilon (0.1 mm)</span>
+<span class="dt">double</span> epsilon {<span class="fl">0.0001</span>};</code></pre></div>
+<p>本ライブラリでニュートン法の計算を打ち切る基準として使用する値です。 式 (9) や式 (10) の <span class="math inline">\(\varepsilon\)</span> として使います。</p>
+<h3 id="補助関数"><span class="header-section-number">3.1.5</span> 補助関数</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">inline</span> <span class="dt">double</span> square (<span class="dt">double</span> x)
+{
+  <span class="cf">return</span> x * x;
+}</code></pre></div>
+<p>二乗を計算する関数です。</p>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">inline</span> <span class="dt">double</span> distance (<span class="at">const</span> <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; &amp;p1,
+                        <span class="at">const</span> <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; &amp;p2)
+{
+  <span class="cf">return</span> sqrt ( square ( p1[<span class="dv">0</span>] - p2[<span class="dv">0</span>])
+                + square ( p1[<span class="dv">1</span>] - p2[<span class="dv">1</span>])
+                + square ( p1[<span class="dv">2</span>] - p2[<span class="dv">2</span>]) );
+}</code></pre></div>
+<p>距離を計算する関数です。</p>
+<h3 id="f-1"><span class="header-section-number">3.1.6</span> F</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Calculate F (to be solved as equations)</span>
+<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; calc_f (<span class="at">const</span> <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; &amp;Xarg)
+{
+  <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; fv;
+
+  <span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; Si.size (); ++i)
+    fv.push_back (distance (Si[i], Xarg) + Xarg[<span class="dv">3</span>] - Ri[i]);
+
+  <span class="cf">return</span> fv;
+}</code></pre></div>
+<p><span class="math inline">\({\boldsymbol{F}}\)</span> を求める式 (3) を計算する関数です。 ライブラリからコールバックされます。</p>
+<h3 id="j-1"><span class="header-section-number">3.1.7</span> J</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Calculate J (Jacobian matrix of F)</span>
+<span class="bu">std::</span>vector&lt;<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt;&gt; calc_j (<span class="at">const</span> <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; &amp;Xarg)
+{
+  <span class="bu">std::</span>vector&lt;<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt;&gt; jv;
+
+  <span class="cf">for</span> (<span class="dt">int</span> i = <span class="dv">0</span>; i &lt; Si.size (); ++i)
+    {
+      <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; j_row;
+      <span class="dt">double</span> d = distance (Si[i], Xarg);
+
+      <span class="cf">for</span> (<span class="dt">int</span> n = <span class="dv">0</span>; n &lt; <span class="dv">3</span>; ++n)
+        j_row.push_back (- (Si[i][n] - Xarg[n]) / d);
+      j_row.push_back (<span class="fl">1.0</span>);
+
+      jv.push_back (j_row);
+    }
+
+  <span class="cf">return</span> jv;
+}</code></pre></div>
+<p><span class="math inline">\({\boldsymbol{J}}\)</span> を求める式 (5) を計算する関数です。 ライブラリからコールバックされます。 未知数4で衛星の数も4なので4行4列の正方行列となります。</p>
+<h3 id="計算"><span class="header-section-number">3.1.8</span> 計算</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">  <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; solution;
+  <span class="cf">try</span>
+    {
+      newton_method::newton_method nm;
+
+      nm.set_function (calc_f, calc_j);
+      nm.set_epsilon_F (epsilon);
+      nm.set_epsilon_deltaX (epsilon);
+      <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; initial_value {<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>};
+      solution = nm.solve (initial_value);
+    }</code></pre></div>
+<p>ニュートン法の計算をしています。</p>
+<ul>
+<li>インスタンス <code>nm</code> を作成</li>
+<li><code>nm.set_function ()</code> で <span class="math inline">\({\boldsymbol{F}}\)</span>, <span class="math inline">\({\boldsymbol{J}}\)</span> を計算する関数をセット
+<ul>
+<li>それぞれ式 (3)、式 (5) を計算する関数です</li>
+</ul></li>
+<li><code>nm.set_epsilon_F ()</code> および <code>nm.set_epsilon_deltaX ()</code> で 計算打ち切り条件を設定
+<ul>
+<li>それぞれ式 (9)、式 (10) の条件を設定します</li>
+</ul></li>
+<li><code>initial_value</code> に計算の初期値を設定
+<ul>
+<li>式 (6) に相当します</li>
+</ul></li>
+<li><code>nm.solve ()</code> でニュートン法の計算を実施し、<code>solution</code> に解を得る
+<ul>
+<li>この中のライブラリの処理は、 <code>nm.set_function ()</code> でセットされた <span class="math inline">\({\boldsymbol{F}}\)</span>, <span class="math inline">\({\boldsymbol{J}}\)</span> を計算する関数を繰り返しコールバックすることで 近似解を真の解に近づけていき、 式 (9) または式 (10) の条件を満たした近似解を返します</li>
+</ul></li>
+</ul>
+<p>という流れになっています。</p>
+<h3 id="結果表示"><span class="header-section-number">3.1.9</span> 結果表示</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">  <span class="bu">std::</span>cout &lt;&lt; <span class="bu">std::</span>endl &lt;&lt; <span class="st">&quot;Solution: P (x y z) and delta_S:&quot;</span> &lt;&lt; <span class="bu">std::</span>endl;
+  <span class="cf">for</span> (<span class="kw">auto</span> i: solution)
+    <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; i;
+  <span class="bu">std::</span>cout &lt;&lt; <span class="bu">std::</span>endl;
+
+  <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot;Error distance:&quot;</span> &lt;&lt; <span class="bu">std::</span>endl;
+  <span class="dt">double</span> error_distance = distance (solution, unknown_P);
+  <span class="bu">std::</span>cout &lt;&lt; <span class="st">&quot; &quot;</span> &lt;&lt; error_distance &lt;&lt; <span class="bu">std::</span>endl;</code></pre></div>
+<p>最終的に得られた解として受信機の座標 <span class="math inline">\(P \left( x_{\mathrm{p}}, y_{\mathrm{p}}, z_{\mathrm{p}} \right)\)</span> と時計オフセットによる距離の誤差 <span class="math inline">\(\Delta S\)</span> を表示します。 次いで、受信機座標の正解データとの距離を計算して表示します。</p>
+<h3 id="実行結果"><span class="header-section-number">3.1.10</span> 実行結果</h3>
+<p>サンプルプログラムの実行結果は以下のようになりました（抜粋）。</p>
+<pre><code>Solution: P (x y z) and delta_S:
+ -3947717.825152 3364407.721345 3699485.385124 -14.272990
+Error distance:
+ 5.057781</code></pre>
+<p>文献[1]のプログラムを重み無しに設定したものと比べて約 5 m 強の誤差がある、 ということになります。 文献[1]のプログラムは 8 衛星を使って最小二乗法で計算したものに対して、 このサンプルプログラムは 4 衛星しか使っていませんから、 この程度の誤差は出るものと思います。</p>
+<h2 id="最小二乗法を使ったサンプル重み無し"><span class="header-section-number">3.2</span> 最小二乗法を使ったサンプル（重み無し）</h2>
+<p>以下、最小二乗法を使ったサンプル（重み無し） <a href="https://github.com/trueroad/newton_method/blob/master/sample-non_weighted.cc">sample-non_weighted.cc</a> からの抜粋です。</p>
+<h3 id="衛星座標-1"><span class="header-section-number">3.2.1</span> 衛星座標</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Satellite position (known, given from received data)</span>
+<span class="bu">std::</span>vector&lt;<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt;&gt; Si
+{
+  {   <span class="dv">-11327938</span>.<span class="dv">990000</span>,     <span class="fl">9886884.330000</span>,    <span class="fl">21895433.227000</span> },
+  {     <span class="fl">4755496.711000</span>,    <span class="fl">19362623.328000</span>,    <span class="fl">18112665.323000</span> },
+  {    <span class="dv">-7506201</span>.<span class="dv">243000</span>,    <span class="fl">24076860.073000</span>,     <span class="fl">7092793.940000</span> },
+  {   <span class="dv">-23085789</span>.<span class="dv">286000</span>,    <span class="fl">12409399.010000</span>,     <span class="fl">4602891.246000</span> },
+  {   <span class="dv">-21893190</span>.<span class="dv">888000</span>,    <span class="dv">-2248546</span>.<span class="dv">668000</span>,    <span class="fl">14796664.928000</span> },
+  {   <span class="dv">-24893247</span>.<span class="dv">395000</span>,     <span class="fl">3827508.606000</span>,    <span class="dv">-8794926</span>.<span class="dv">751000</span> },
+  {   <span class="dv">-12971740</span>.<span class="dv">598000</span>,   <span class="dv">-10587013</span>.<span class="dv">898000</span>,    <span class="fl">21061849.442000</span> },
+  {     <span class="fl">7069732.127000</span>,    <span class="fl">22267387.067000</span>,    <span class="fl">12627670.276000</span> },
+};</code></pre></div>
+<p>8 衛星の座標 <span class="math inline">\(S_i\)</span>, <span class="math inline">\(\left( i = 1, 2, ..., 8\right)\)</span> を設定しています。 <span class="math inline">\({\boldsymbol{F}}\)</span> を求める式 (3) や <span class="math inline">\({\boldsymbol{J}}\)</span> を求める式 (5) の計算に使います。</p>
+<h3 id="距離-2"><span class="header-section-number">3.2.2</span> 距離</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Observed distance (known, measurement result)</span>
+<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; Ri
+{
+     <span class="fl">20690632.972000</span>,
+     <span class="fl">23225588.018000</span>,
+     <span class="fl">21288081.687000</span>,
+     <span class="fl">21187099.471000</span>,
+     <span class="fl">21833271.739000</span>,
+     <span class="fl">24393427.283000</span>,
+     <span class="fl">24031767.538000</span>,
+     <span class="fl">23630886.925000</span>,
+};</code></pre></div>
+<p>それぞれの衛星から受信機までの距離 <span class="math inline">\(R_i\)</span>, <span class="math inline">\(\left( i = 1, 2, ..., 8\right)\)</span> を設定しています。 <span class="math inline">\({\boldsymbol{F}}\)</span> を求める式 (3) や <span class="math inline">\({\boldsymbol{J}}\)</span> を求める式 (5) の計算に使います。</p>
+<h3 id="その他"><span class="header-section-number">3.2.3</span> その他</h3>
+<p>その他の部分は最小二乗法を使わないサンプルと同じです。 この場合、衛星の数が8個に増えているため、 ヤコビ行列 <span class="math inline">\({\boldsymbol{J}}\)</span> が正方行列ではなくなり、8 行 4 列の縦長となります。 縦長の場合、本ライブラリはデフォルトで最小二乗法が適用された結果を返します。</p>
+<h3 id="実行結果-1"><span class="header-section-number">3.2.4</span> 実行結果</h3>
+<p>サンプルプログラムの実行結果は以下のようになりました（抜粋）。</p>
+<pre><code>Solution: P (x y z) and delta_S:
+ -3947719.368769 3364403.466618 3699487.642488 -15.392384
+Error distance:
+ 0.000000</code></pre>
+<p>文献[1]のプログラムを重み無しに設定したものと比べ （表示桁数の範囲で）誤差ゼロとなりました。 本ライブラリやサンプルプログラムは、 文献[1]とは計算式、処理等が異なりますが、 同じデータ、同じ条件で計算した場合の結果は一致した、ということになります。</p>
+<h2 id="最小二乗法を使ったサンプル重み付き"><span class="header-section-number">3.3</span> 最小二乗法を使ったサンプル（重み付き）</h2>
+<p>以下、最小二乗法を使ったサンプル（重み付き） <a href="https://github.com/trueroad/newton_method/blob/master/sample-weighted.cc">sample-weighted.cc</a> からの抜粋です。</p>
+<h3 id="重み行列"><span class="header-section-number">3.3.1</span> 重み行列</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Observed weight (known, measurement result)</span>
+<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; W
+{
+          <span class="fl">0.34246575</span>,
+          <span class="fl">0.41806020</span>,
+          <span class="fl">0.44662796</span>,
+          <span class="fl">0.33967391</span>,
+          <span class="fl">0.33411293</span>,
+          <span class="fl">0.29682398</span>,
+          <span class="fl">0.30759766</span>,
+          <span class="fl">0.31046259</span>,
+};</code></pre></div>
+<p>式 (12) の重み行列 <span class="math inline">\(W^{\frac{1}{2}}\)</span> です。 実際には行列なのですが、対角行列なので、 その成分を並べた <code>std::vector&lt;double&gt;</code> を用意します。</p>
+<h3 id="受信機座標正解データ-1"><span class="header-section-number">3.3.2</span> 受信機座標（正解データ）</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Receiver position (actually unknown)</span>
+<span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; unknown_P
+{
+   <span class="dv">-3947719</span>.<span class="dv">26542369</span>,   <span class="fl">3364403.97164603</span>,   <span class="fl">3699487.31861822</span>
+};</code></pre></div>
+<p>本ライブラリの計算結果が正しいか確かめるための正解データとする目的で、 文献[1]「（その3）」のプログラムを重み付きに設定して計算した座標です。 先のサンプルプログラムでは、 重み無し設定で計算した座標を使っていたため数字が異なります。 本ライブラリの計算結果が正しいか確かめるための正解データとする目的で使い、 本ライブラリのニュートン法の計算には使いません。</p>
+<h3 id="計算-1"><span class="header-section-number">3.3.3</span> 計算</h3>
+<div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp">  <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; solution;
+  <span class="cf">try</span>
+    {
+      newton_method::newton_method nm;
+
+      nm.set_function (calc_f, calc_j);
+      nm.set_epsilon_F (epsilon);
+      nm.set_epsilon_deltaX (epsilon);
+      nm.set_weight (W);
+      nm.set_least_square (newton_method::least_square::weighted);
+      <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; initial_value {<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>};
+      solution = nm.solve (initial_value);
+    }</code></pre></div>
+<p>重みをつけた計算をしています。 追加された処理は、</p>
+<ul>
+<li><code>nm.set_weight ()</code> で重み行列を設定</li>
+<li><code>nm.set_least_square ()</code> で重みをつけた計算をするように設定
+<ul>
+<li>設定した重み行列を式 (12) とみなして、 式 (13) の方法で計算する設定になります</li>
+</ul></li>
+</ul>
+<p>の2つだけです。</p>
+<h3 id="その他-1"><span class="header-section-number">3.3.4</span> その他</h3>
+<p>その他の部分は重み付きのサンプルと同じです。</p>
+<h3 id="実行結果-2"><span class="header-section-number">3.3.5</span> 実行結果</h3>
+<p>サンプルプログラムの実行結果は以下のようになりました（抜粋）。</p>
+<pre><code>Solution: P (x y z) and delta_S:
+ -3947719.265424 3364403.971646 3699487.318618 -15.633489
+Error distance:
+ 0.000000</code></pre>
+<p>重み付きの場合も、 文献[1]のプログラムをと比べて（表示桁数の範囲で）誤差ゼロとなりました。</p>
+<p>もう一度書きますが、本ライブラリやサンプルプログラムは、 文献[1]とは計算式、処理等が異なります。 それでも、同じデータ、同じ条件で計算した場合の結果は一致した、 ということになります。</p>
+<h1 id="参考文献"><span class="header-section-number">4</span> 参考文献</h1>
+<p>[1] 福島荘之介. 理解するためのGPS測位計算プログラム入門. <a href="http://www.enri.go.jp/~fks442/K_MUSEN/" class="uri">http://www.enri.go.jp/~fks442/K_MUSEN/</a>.</p>
+<p>[2] 小柳義夫. ｢最小二乗法」事始め. 応用数理, Vol. 26 (2016) No. 1, pp. 39-42. <a href="http://doi.org/10.11540/bjsiam.26.1_39" class="uri">http://doi.org/10.11540/bjsiam.26.1_39</a></p>
+<p>[3] 小柳義夫. 最小2乗法における新しい手法. 応用物理, Vol. 46 (1977) No. 1, pp. 55-60. <a href="http://doi.org/10.11470/oubutsu1932.46.55" class="uri">http://doi.org/10.11470/oubutsu1932.46.55</a></p>
+<p>[4] 小柳義夫. 最小二乗法の新しいアルゴリズム. 情報処理, Vol. 23 (1982) No. 2, pp. 99-108. <a href="http://id.nii.ac.jp/1001/00006446/" class="uri">http://id.nii.ac.jp/1001/00006446/</a></p>
+<h1 id="license"><span class="header-section-number">5</span> License</h1>
+<p>Copyright (C) 2017 Masamichi Hosoda. All rights reserved.</p>
+<p>License: BSD-2-Clause</p>
+<p><a href="https://github.com/trueroad/newton_method/blob/master/LICENSE">LICENSE</a> をご覧ください。</p>
+</body>
+</html>
