@@ -1,0 +1,9 @@
+*.bb.html
+*.bb.??.html
+*.tex
+*.out
+*.toc
+*.aux
+*.log
+*.fdb_latexmk
+*.fls
