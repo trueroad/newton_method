@@ -5,6 +5,10 @@
 
 連立方程式を解くことができるニュートン法のライブラリです。
 
+[
+https://github.com/trueroad/newton_method
+](https://github.com/trueroad/newton_method)
+
 * 優決定系（変数の数よりも方程式の数の方が多い場合）でも
 最小二乗法による解を得ることができます。
 * C++ で書かれています。
@@ -33,7 +37,11 @@
 利用させていただいております（
 [サンプルプログラムのデータについて](./doc/sample-data.ja.md)
 ）。
-本サンプルで使用している計算式および処理は文献[1]とは異なります。
+本サンプルで使用している計算式および処理は文献[1]とは異なります（
+[
+サンプルプログラムの計算式について
+](https://trueroad.github.io/newton_method/doc/sample-formula.ja.html)
+）。
 
 ### サンプルをビルドする
 

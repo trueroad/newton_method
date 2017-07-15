@@ -5,6 +5,10 @@
 
 This is a Newton's method library that can solve simultaneous equations.
 
+[
+https://github.com/trueroad/newton_method
+](https://github.com/trueroad/newton_method)
+
 * You can get solutions with the least-squares method
 even if overdetermined systems
 (the number of equations is greater than the number of variables).
@@ -34,6 +38,11 @@ are based on the document [1]
 .
 The calculation formulas and processing used in these samples
 are different from the document [1].
+([
+Sample program's calculation formulas
+](https://trueroad.github.io/newton_method/doc/sample-formula.html)
+)
+.
 
 ### Build samples
 
