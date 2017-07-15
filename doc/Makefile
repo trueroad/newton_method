@@ -44,6 +44,7 @@ doc-pdf: sample-formula.ja.pdf sample-formula.pdf
 		-t html5 --template=template.ja.html5 -c $(CSS) $(HTML_MATH) \
 		--include-before-body=$*.bb.ja.html \
 		-o $@
+	chmod 644 $@
 
 %.ja.tex: %.ja.md %.bb.ja.tex template.ja.latex
 	pandoc $< -s $(FILTER) \
@@ -59,6 +60,7 @@ doc-pdf: sample-formula.ja.pdf sample-formula.pdf
 		-t html5 --template=template.html5 -c $(CSS) $(HTML_MATH) \
 		--include-before-body=$*.bb.html \
 		-o $@
+	chmod 644 $@
 
 %.tex: %.md %.bb.tex template.latex
 	pandoc $< -s $(FILTER) \
