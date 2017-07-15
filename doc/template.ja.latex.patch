@@ -1,0 +1,47 @@
+--- template.latex.org	2017-07-16 00:04:45.266123800 +0900
++++ template.ja.latex	2017-07-16 00:04:45.359877900 +0900
+@@ -12,6 +12,44 @@
+ \setstretch{$linestretch$}
+ $endif$
+ \usepackage{amssymb,amsmath}
++\usepackage[no-math]{luatexja-fontspec}
++\setmainjfont[BoldFont=Source Han Serif Bold]{Source Han Serif}
++\setsansjfont[BoldFont=Source Han Sans Bold]{Source Han Sans}
++\usepackage{unicode-math}
++\unimathsetup{math-style=ISO,bold-style=ISO}
++\setmainfont{Libertinus Serif}
++\setsansfont{Libertinus Sans}
++\setmonofont{TeX Gyre Cursor}
++\setmathfont{Libertinus Math}
++\usepackage{listings}
++\usepackage[dvipsnames]{xcolor}
++\lstset{
++    basicstyle=\ttfamily,
++    keywordstyle=\color[RGB]{33,74,135}\bfseries,
++    stringstyle=\color[RGB]{79,153,5},
++    commentstyle=\color[RGB]{143,89,2}\itshape,
++    numberstyle=\footnotesize,
++    numbers=none,
++    stepnumber=1,
++    numbersep=15pt,
++    backgroundcolor=\color[RGB]{251,251,251},
++    frame=single,
++    frameround=ffff,
++    framesep=5pt,
++    rulecolor=\color[RGB]{148,150,152}, 
++    breaklines=true,
++    breakautoindent=true,
++    breakatwhitespace=true,
++    breakindent=25pt,
++    showspaces=false,
++    showstringspaces=false,
++    showtabs=false,
++    tabsize=2,
++    captionpos=b,
++    linewidth=\textwidth,
++}
++\renewcommand{\boldsymbol}{\symbf}
++\renewcommand{\mathrm}{\symup}
+ \usepackage{ifxetex,ifluatex}
+ \usepackage{fixltx2e} % provides \textsubscript
+ \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
