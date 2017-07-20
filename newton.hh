@@ -1,5 +1,5 @@
 //
-// Newton's method library to solve simultaneous equations 2017-06-24.16
+// Newton's method library to solve simultaneous equations 2017-07-20.12
 // https://github.com/trueroad/newton_method/
 //
 // Copyright (C) 2017 Masamichi Hosoda. All rights reserved.
@@ -68,6 +68,7 @@ namespace newton_method
 
     // Set iteration parameters
     void set_max_iteration (int /* k */) noexcept;
+    void set_max_iteration_exception (bool /* bte */ ) noexcept;
     void set_epsilon_F (double /* ef */) noexcept;
     void set_epsilon_deltaX (double /* ex */) noexcept;
 

@@ -1,5 +1,5 @@
 //
-// Newton's method library to solve simultaneous equations 2017-06-24.16
+// Newton's method library to solve simultaneous equations 2017-07-20.12
 // https://github.com/trueroad/newton_method/
 //
 // Copyright (C) 2017 Masamichi Hosoda. All rights reserved.
@@ -58,6 +58,10 @@ namespace newton_method
     {
       max_iteration_ = k;
     }
+    void set_max_iteration_exception (bool bte) noexcept
+    {
+      b_throw_exception_max_iteration_ = bte;
+    }
     void set_epsilon_F (double ef) noexcept
     {
       epsilon_F_ = ef;
@@ -109,6 +113,7 @@ namespace newton_method
 
     // Iteration parameters
     int max_iteration_ = 256;
+    bool b_throw_exception_max_iteration_ = true;
     double epsilon_F_ = std::numeric_limits<double>::epsilon () * 16;
     double epsilon_deltaX_ = std::numeric_limits<double>::epsilon () * 16;
 
@@ -358,10 +363,12 @@ namespace newton_method
       << max_iteration_ << "), the solution does not converge."
       << std::endl;
 #endif
-
-    throw std::runtime_error
-      ("Although the number of iterations has exceeded the maximum, "
-       "the solution does not converge.");
+    if (b_throw_exception_max_iteration_)
+      {
+        throw std::runtime_error
+          ("Although the number of iterations has exceeded the maximum, "
+           "the solution does not converge.");
+      }
   }
 
   inline std::vector<double>
@@ -428,6 +435,11 @@ namespace newton_method
   void newton_method::set_max_iteration (int k) noexcept
   {
     pimpl_->set_max_iteration (k);
+  }
+
+  void newton_method::set_max_iteration_exception (bool bte) noexcept
+  {
+    pimpl_->set_max_iteration_exception (bte);
   }
 
   void newton_method::set_epsilon_F (double ef) noexcept
