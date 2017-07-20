@@ -1,5 +1,5 @@
 //
-// Newton's method library to solve simultaneous equations 2017-07-20.12
+// Newton's method library to solve simultaneous equations 2017-07-20.13
 // https://github.com/trueroad/newton_method/
 //
 // Copyright (C) 2017 Masamichi Hosoda. All rights reserved.
@@ -86,6 +86,12 @@ namespace newton_method
     inline std::vector<double>
     solve (const std::vector<double> & /* initial_value */);
 
+    // Get completion status
+    completion_status get_completion_status () noexcept
+    {
+      return completion_status_;
+    }
+
     // Constructor and destructor
     impl () = default;
     ~impl () = default;
@@ -121,6 +127,9 @@ namespace newton_method
     algorithm algorithm_ = algorithm::ColPivHouseholderQR;
     least_square least_square_ = least_square::through_pass;
     Eigen::MatrixXd W_;
+
+    // Status
+    completion_status completion_status_ = completion_status::none;
 
     // Deleted constructors
     impl (newton_method::impl const &) = delete;
@@ -214,6 +223,8 @@ namespace newton_method
           << std::endl
           << "Completed." << std::endl;
 #endif
+
+        completion_status_ = completion_status::epsilon_F;
 
         return true;
       }
@@ -341,6 +352,8 @@ namespace newton_method
           << "Completed." << std::endl;
 #endif
 
+        completion_status_ = completion_status::epsilon_deltaX;
+
         return true;
       }
 
@@ -363,6 +376,9 @@ namespace newton_method
       << max_iteration_ << "), the solution does not converge."
       << std::endl;
 #endif
+
+    completion_status_ = completion_status::max_iteration_count_exceeded;
+
     if (b_throw_exception_max_iteration_)
       {
         throw std::runtime_error
@@ -471,5 +487,10 @@ namespace newton_method
   newton_method::solve (const std::vector<double> &initial_value)
   {
     return pimpl_->solve (initial_value);
+  }
+
+  completion_status newton_method::get_completion_status () noexcept
+  {
+    return pimpl_->get_completion_status ();
   }
 }

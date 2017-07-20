@@ -1,5 +1,5 @@
 //
-// Newton's method library to solve simultaneous equations 2017-07-20.12
+// Newton's method library to solve simultaneous equations 2017-07-20.13
 // https://github.com/trueroad/newton_method/
 //
 // Copyright (C) 2017 Masamichi Hosoda. All rights reserved.
@@ -55,6 +55,14 @@ namespace newton_method
       weighted_normal_equation
     };
 
+  enum class completion_status
+    {
+      none,
+      epsilon_F,
+      epsilon_deltaX,
+      max_iteration_count_exceeded
+    };
+
   class newton_method
   {
   public:
@@ -80,6 +88,9 @@ namespace newton_method
     // Solver
     std::vector<double>
     solve (const std::vector<double> & /* initial_value */);
+
+    // Get status
+    completion_status get_completion_status () noexcept;
 
     // Constructor and destructor
     newton_method ();
