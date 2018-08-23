@@ -10,7 +10,10 @@ CPPFLAGS_NEWTON_METHOD = -DDEBUG_NEWTON_METHOD
 #
 # Objects and libraries
 #
-OBJS = newton.o
+OBJS = newton.o \
+	solve-through_pass-ColPivHouseholderQR.o \
+	solve-weighted-ColPivHouseholderQR.o \
+
 LDLIBS =
 CPPFLAGS_EIGEN = $(shell pkg-config eigen3 --cflags)
 #CPPFLAGS_EIGEN = -I./eigen33
