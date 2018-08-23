@@ -77,15 +77,7 @@ namespace newton_method
       epsilon_deltaX_ = ex;
     }
 
-    // Set algorithm
-    void set_algorithm (algorithm a) noexcept
-    {
-      algorithm_ = a;
-    }
-    void set_least_square (least_square ls) noexcept
-    {
-      least_square_ = ls;
-    }
+    // Set weight
     inline void set_weight (const std::vector<double> &weight);
 
     // Solver
@@ -131,9 +123,7 @@ namespace newton_method
     double epsilon_F_ = std::numeric_limits<double>::epsilon () * 16;
     double epsilon_deltaX_ = std::numeric_limits<double>::epsilon () * 16;
 
-    // Algorithm
-    algorithm algorithm_ = algorithm::ColPivHouseholderQR;
-    least_square least_square_ = least_square::through_pass;
+    // Weight
     Eigen::MatrixXd W_;
 
     // Status
@@ -476,16 +466,6 @@ namespace newton_method
   void newton_method::set_epsilon_deltaX (double ex) noexcept
   {
     pimpl_->set_epsilon_deltaX (ex);
-  }
-
-  void newton_method::set_algorithm (algorithm a) noexcept
-  {
-    pimpl_->set_algorithm (a);
-  }
-
-  void newton_method::set_least_square (least_square ls) noexcept
-  {
-    pimpl_->set_least_square (ls);
   }
 
   void newton_method::set_weight (const std::vector<double> &weight)

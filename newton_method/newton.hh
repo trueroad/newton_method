@@ -86,9 +86,7 @@ namespace newton_method
     void set_epsilon_F (double /* ef */) noexcept;
     void set_epsilon_deltaX (double /* ex */) noexcept;
 
-    // Set algorithm
-    void set_algorithm (algorithm /* a */) noexcept;
-    void set_least_square (least_square /* ls */) noexcept;
+    // Set weight
     void set_weight (const std::vector<double> & /* weight */);
 
     // Solver
