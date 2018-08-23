@@ -45,15 +45,17 @@ https://github.com/trueroad/newton_method
 
 ### サンプルをビルドする
 
-サンプル用の
-[Makefile](./Makefile)
+サンプルをビルドする
+[Makefile](./Makefile) とライブラリをビルドする
+[newton_method/Makefile](./newton_method/Makefile)
 をつけてありますので、
 必要に応じて書き換えてください。
 
 * C++11 に対応したコンパイラが必要です。
     + g++ 5.4.0 等で動作確認しています。
         - 添付の
-        [Makefile](./Makefile)
+        [Makefile](./Makefile) と
+        [newton_method/Makefile](./newton_method/Makefile)
         では、コンパイラオプションに
         `-std=c++11` をつけてあります。
     + 他のコンパイラを使うときには、
@@ -66,7 +68,7 @@ https://github.com/trueroad/newton_method
     等のパッケージがインストールしてあれば
     （pkg-config で eigen3 が見つかるようになっていれば）
     そのまま `make` コマンドでビルドができます。
-    + 手動でインストールした場合等は、`EIGEN_CXXFLAGS` を書き換えて、
+    + 手動でインストールした場合等は、`CPPFLAGS_EIGEN` を書き換えて、
     Eigen のインストール先が include できるようにしてください。
 * デバッグ表示が有効になっています。
     + コンパイルオプションに `-DDEBUG_NEWTON_METHOD` を
@@ -74,7 +76,7 @@ https://github.com/trueroad/newton_method
     + 途中経過の表示が必要なければ、このオプションを削除してください。
 
 なお、私の環境では Eigen 3.2.5 だと
-[newton.cc](./newton.cc)
+[newton_method/newton.cc](./newton_method/newton.cc)
 のコンパイル中に警告が出ます。
 Eigen 3.3.4 なら警告がでません。
 

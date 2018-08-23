@@ -33,7 +33,7 @@
 #include<iostream>
 #include<cmath>
 
-#include"newton.hh"
+#include"newton_method/newton.hh"
 
 // Satellite position (known, given from received data)
 std::vector<std::vector<double>> Si

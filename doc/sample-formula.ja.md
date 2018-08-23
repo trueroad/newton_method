@@ -267,11 +267,11 @@ $$
 ここでは、ライブラリ本体
 [
 newton.hh
-](https://github.com/trueroad/newton_method/blob/master/newton.hh)
+](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.hh)
 /
 [
 newton.cc
-](https://github.com/trueroad/newton_method/blob/master/newton.cc)
+](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.cc)
 のニュートン法の処理を簡単に紹介します。
 ニュートン法では、まず、
 解の候補となる初期値 $\Vect{X}_0$ を適当に決めます。
@@ -394,11 +394,11 @@ $\Vect{X}_k$
 ここでは、ライブラリ本体
 [
 newton.hh
-](https://github.com/trueroad/newton_method/blob/master/newton.hh)
+](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.hh)
 /
 [
 newton.cc
-](https://github.com/trueroad/newton_method/blob/master/newton.cc)
+](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.cc)
 の最小二乗法の処理を簡単に紹介します。
 衛星が4個よりも多いとき、ヤコビ行列 $\Mat{J}$ は縦長となり、
 正方行列ではなくなるため、式 ([@eq:deltaX_equation]) が計算できなくなります。

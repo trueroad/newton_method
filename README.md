@@ -46,12 +46,15 @@ Sample program's calculation formulas
 
 ### Build samples
 
-[Makefile](./Makefile) for samples is contained,
+[Makefile](./Makefile) for building samples and
+[newton_method/Makefile](./newton_method/Makefile) for building this library
+are contained,
 so please rewrite if necessary.
 
 * C++11 or later compiler is required.
     + g++ 5.4.0 can compile it.
-        - In the [Makefile](./Makefile) ,
+        - In the [Makefile](./Makefile) and
+        [newton_method/Makefile](./newton_method/Makefile) ,
         compiler option `-std=c++11` is used.
     + If you would like another compiler,
     please rewrite the compiler option as appropriate for C++11 can be used.
@@ -61,7 +64,7 @@ so please rewrite if necessary.
     is installed (that is, pkg-config can find eigen3),
     you can build it as it is with the `make` command.
     + If you installed Eigen without using packages,
-    please rewrite `EIGEN_CXXFLAGS`
+    please rewrite `CPPFLAGS_EIGEN`
     for your compiler can include Eigen header files.
 * Debug mode is enabled.
     + The compile option `-DDEBUG_NEWTON_METHOD` is enabled.
@@ -70,7 +73,7 @@ so please rewrite if necessary.
 
 Note, in my environment,
 g++ with Eigen 3.2.5 shows some warnings
-while compiling [newton.cc](./newton.cc).
+while compiling [newton_method/newton.cc](./newton_method/newton.cc).
 g++ with Eigen 3.3.4 does not show any warnings.
 
 ## References

@@ -3,8 +3,10 @@
 \#*
 \#.*
 /eigen33/
+*.d
 *.o
 *.exe
+libnewton.a
 sample
 sample-non_weighted
 sample-weighted
