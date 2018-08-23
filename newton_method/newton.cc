@@ -89,7 +89,8 @@ namespace newton_method
     inline void set_weight (const std::vector<double> &weight);
 
     // Solver
-    inline std::vector<double>
+    template <least_square LEAST_SQUARE, algorithm ALGORITHM>
+    std::vector<double>
     solve (const std::vector<double> & /* initial_value */);
 
     // Get completion status
@@ -110,7 +111,8 @@ namespace newton_method
     inline Eigen::VectorXd calc_F (const std::vector<double> & /* x */);
     inline bool check_F (const Eigen::VectorXd & /* F */);
     inline Eigen::MatrixXd calc_J (const std::vector<double> & /* x */);
-    template <typename T_F, typename T_J>
+    template <least_square LEAST_SQUARE, algorithm ALGORITHM,
+              typename T_F, typename T_J>
     Eigen::VectorXd calc_deltaX (const T_F &F, const T_J &J);
     template <typename T_X>
     bool check_deltaX (const T_X & /* X */,
@@ -264,7 +266,8 @@ namespace newton_method
     return J;
   }
 
-  template <typename T_F, typename T_J>
+  template <least_square LEAST_SQUARE, algorithm ALGORITHM,
+            typename T_F, typename T_J>
   Eigen::VectorXd
   newton_method::impl::calc_deltaX (const T_F &F, const T_J &J)
   {
@@ -272,7 +275,7 @@ namespace newton_method
     Eigen::MatrixXd A;
     Eigen::VectorXd b;
 
-    switch (least_square_)
+    switch (LEAST_SQUARE)
       {
       case least_square::through_pass:
         A = J;
@@ -296,7 +299,7 @@ namespace newton_method
         break;
       }
 
-    switch (algorithm_)
+    switch (ALGORITHM)
       {
       case algorithm::PartialPivLU:
         deltaX = A.partialPivLu ().solve (b);
@@ -393,7 +396,8 @@ namespace newton_method
       }
   }
 
-  inline std::vector<double>
+  template <least_square LEAST_SQUARE, algorithm ALGORITHM>
+  std::vector<double>
   newton_method::impl::solve (const std::vector<double> &initial_value)
   {
     check_args ();
@@ -413,7 +417,7 @@ namespace newton_method
 
         auto J {calc_J (xv)};
 
-        auto deltaX {calc_deltaX (F, J)};
+        auto deltaX {calc_deltaX<LEAST_SQUARE, ALGORITHM> (F, J)};
 
         X = X + deltaX;  // xv is also updated.
         if (check_deltaX (X, deltaX))
@@ -489,14 +493,27 @@ namespace newton_method
     pimpl_->set_weight (weight);
   }
 
+  template <least_square LEAST_SQUARE, algorithm ALGORITHM>
   std::vector<double>
   newton_method::solve (const std::vector<double> &initial_value)
   {
-    return pimpl_->solve (initial_value);
+    return pimpl_->solve<LEAST_SQUARE, ALGORITHM> (initial_value);
   }
 
   completion_status newton_method::get_completion_status () noexcept
   {
     return pimpl_->get_completion_status ();
   }
+}
+
+//
+// Explicit instantiation
+//
+namespace newton_method
+{
+  template
+  std::vector<double>
+  newton_method::solve<least_square::through_pass,
+                       algorithm::ColPivHouseholderQR>
+  (const std::vector<double> & /* initial_value */);
 }

@@ -92,6 +92,8 @@ namespace newton_method
     void set_weight (const std::vector<double> & /* weight */);
 
     // Solver
+    template <least_square LEAST_SQUARE = least_square::through_pass,
+              algorithm ALGORITHM = algorithm::ColPivHouseholderQR>
     std::vector<double>
     solve (const std::vector<double> & /* initial_value */);
 
