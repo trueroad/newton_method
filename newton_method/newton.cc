@@ -516,4 +516,9 @@ namespace newton_method
   newton_method::solve<least_square::through_pass,
                        algorithm::ColPivHouseholderQR>
   (const std::vector<double> & /* initial_value */);
+  template
+  std::vector<double>
+  newton_method::solve<least_square::weighted,
+                       algorithm::ColPivHouseholderQR>
+  (const std::vector<double> & /* initial_value */);
 }

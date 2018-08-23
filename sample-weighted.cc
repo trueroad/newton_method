@@ -182,9 +182,9 @@ int main (void)
       nm.set_epsilon_F (epsilon);
       nm.set_epsilon_deltaX (epsilon);
       nm.set_weight (W);
-      nm.set_least_square (newton_method::least_square::weighted);
       std::vector<double> initial_value {0.0, 0.0, 0.0, 0.0};
-      solution = nm.solve (initial_value);
+      solution = nm.solve<newton_method::least_square::weighted>
+        (initial_value);
     }
   catch ( const std::exception &e )
     {
