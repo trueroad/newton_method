@@ -264,14 +264,10 @@ $$
 
 ## ニュートン法
 
-ここでは、ライブラリ本体
+ここでは、
 [
-newton.hh
-](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.hh)
-/
-[
-newton.cc
-](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.cc)
+ライブラリ本体
+](https://github.com/trueroad/newton_method/tree/master/newton_method)
 のニュートン法の処理を簡単に紹介します。
 ニュートン法では、まず、
 解の候補となる初期値 $\Vect{X}_0$ を適当に決めます。
@@ -365,10 +361,11 @@ $$
 
 という操作を繰り返し行い、
 解の候補を真の解に順次近づけていきます。
-このとき、一定の誤差 $\varepsilon$ を決めておき、
+このとき、一定の誤差 $\varepsilon_F$
+や $\varepsilon_{\Delta X}$ を決めておき、
 
 $$
-\left\| \Vect{F} \left( \Vect{X}_k \right) \right\| < \varepsilon
+\left\| \Vect{F} \left( \Vect{X}_k \right) \right\| < \varepsilon_F
 $$ {#eq:F_epsilon}
 
 を満たした場合や
@@ -382,7 +379,7 @@ $$
 \frac{\Delta s}{\Delta S^{(k)}}
 \end{array}
 \right\|
-< \varepsilon
+< \varepsilon_{\Delta X}
 $$ {#eq:deltaX_epsilon}
 
 を満たした場合に計算を打ち切り
@@ -391,17 +388,14 @@ $\Vect{X}_k$
 
 ## 最小二乗法
 
-ここでは、ライブラリ本体
+ここでは、
 [
-newton.hh
-](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.hh)
-/
-[
-newton.cc
-](https://github.com/trueroad/newton_method/blob/master/newton_method/newton.cc)
+ライブラリ本体
+](https://github.com/trueroad/newton_method/tree/master/newton_method)
 の最小二乗法の処理を簡単に紹介します。
 衛星が4個よりも多いとき、ヤコビ行列 $\Mat{J}$ は縦長となり、
-正方行列ではなくなるため、式 ([@eq:deltaX_equation]) が計算できなくなります。
+正方行列ではなくなるため、式 ([@eq:deltaX_equation]) を満たす
+$\Delta \Vect{X}$ が存在しないということになります。
 こういうときに、測定値には誤差があることを前提にして、
 最小二乗法を使います。
 
@@ -410,7 +404,53 @@ newton.cc
 いずれの測定値も誤差が同じである場合や、
 誤差の情報が無い場合には、すべて平等に誤差があるとして「重み無し」の
 最小二乗法を使います。
-数学の教科書的には、式 ([@eq:deltaX_equation]) の代わりに、正規方程式
+式 ([@eq:simultaneous_linear_equation]) では、
+$\Mat{A}$ が縦長になっているとこの式を満たす
+$\Vect{x}$ が存在しません。
+そこで、右辺に誤差 $\Vect{\varepsilon}$ を加えた、
+
+$$
+\Mat{A} \Vect{x} = \Vect{b} + \Vect{\varepsilon}
+$$ {#eq:least_square}
+
+という式を考えます。
+その上で、誤差 $\Vect{\varepsilon}$ が最小になるように、
+$\Vect{\varepsilon}$ の各成分が平等に小さくなるようにして
+解 $\Vect{x}$ を求める、というのが最小二乗法になります。
+具体的には、式を変形すると、
+
+$$
+\Mat{A} \Vect{x} - \Vect{b} = \Vect{\varepsilon}
+$$
+
+となるので、
+$\Mat{A} \Vect{x} - \Vect{b}$
+が最小になるような $\Vect{x}$ を求めることになります。
+そのためには二乗して微分したものがゼロになればよくて、
+
+$$
+\frac{\mathrm{d}}{\mathrm{d} \Vect{x}}
+\left\| \Mat{A} \Vect{x} - \Vect{b} \right\|^2
+=0
+$$
+
+を満たせばよいということになります。
+行列やベクトルの微分は少々ややこしいので飛ばしますが、
+
+$$
+\frac{\mathrm{d}}{\mathrm{d} \Vect{x}}
+\left\| \Mat{A} \Vect{x} - \Vect{b} \right\|^2
+= 2 \left( \Mat{A}^{\top} \Mat{A} \Vect{x} - \Mat{A}^{\top} \Vect{b} \right)
+$$
+
+となるので、ここから数学の教科書的に言う正規方程式
+
+$$
+\Mat{A}^{\top} \Mat{A} \Vect{x} = \Mat{A}^{\top} \Vect{b}
+$$
+
+が得られます。これをあてはめて、
+式 ([@eq:deltaX_equation]) の代わりに、正規方程式
 
 $$
 \left( \Mat{J}^{\top} \Mat{J} \right) \Delta \Vect{X} =
@@ -422,16 +462,271 @@ $$ {#eq:normal_equation}
 正規方程式を使わない方がよいとされています [1-4] 。
 本ライブラリがデフォルトで使用する連立一次方程式を解くアルゴリズムは
 $\Mat{J}$ が縦長の時、
-つまり式 ([@eq:simultaneous_linear_equation]) で $\Mat{A}$ が
-縦長であっても自動的に最小二乗法が適用された解$\Vect{x}$ が得られるもので、
+つまり式 ([@eq:least_square]) で $\Mat{A}$ が
+縦長であっても自動的に
+$\Vect{\varepsilon}$
+が最小の（つまり最小二乗法が適用された）解$\Vect{x}$ が得られるもので、
 正規方程式を使わずに $\Delta \Vect{X}$ が得られます。
 
 ### 重み付き
 
 各衛星からの測定値について、誤差が既知である場合に「重み付き」の
 最小二乗法を使います。
-重み付きの正規方程式を使う場合は、
-各測定値の誤差の分散 $\sigma_i{}^2$ の逆数を使った対角行列
+まず、重みのない式 ([@eq:least_square]) を成分で考えます。
+方程式の数が $n$ 個（つまり衛星の数が $n$ 個）、
+未知数が $m$ 個（GPS の場合は $m=4$ ）で $n>m$ （縦長）として、
+
+$$
+\Mat{A} =
+\left(
+\begin{array}{cccc}
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{array}
+\right)
+,
+\Vect{x} =
+\left(
+\begin{array}{c}
+x_1 \\ x_2 \\ \vdots \\ x_m
+\end{array}
+\right)
+,
+\Vect{b} =
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
+,
+\Vect{\varepsilon} =
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+$$
+
+と置くと、式 ([@eq:least_square]) は
+
+$$
+\left(
+\begin{array}{cccc}
+a_{11} & a_{12} & \cdots & a_{1m} \\
+a_{21} & a_{22} & \cdots & a_{2m} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{n1} & a_{n2} & \cdots & a_{nm}
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+x_1 \\ x_2 \\ \vdots \\ x_m
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
++
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+$$
+
+なので、
+
+$$
+\left(
+\begin{array}{c}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1m}x_m \\
+a_{21}x_2 + a_{22}x_2 + \cdots + a_{2m}x_m \\
+\vdots \\
+a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nm}x_m
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
++
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+$$
+
+となります。これは両辺とも $n$ 次の列ベクトルになっています。
+これをさらにバラバラにします。 $i = 1, 2, \dots, n$ とすると、
+
+$$
+a_{i1}x_1 + a_{i2}x_2 + \cdots + a_{im}x_m = b_i + \varepsilon_i
+$$
+
+となります。
+これは $i$ 番目の方程式、つまり $i$ 番目の衛星に関する式になっています。
+そこで、ここに $i$ 番目の衛星の測定値の重み $w_i$ を適用します。
+両辺に $w_i$ を掛けると、
+
+$$
+w_i \left(
+a_{i1}x_1 + a_{i2}x_2 + \cdots + a_{im}x_m \right)
+= w_i b_i + w_i \varepsilon_i
+$$
+
+となります。
+これを列ベクトルの形にします。
+
+$$
+\left(
+\begin{array}{c}
+w_1 \left( a_{11}x_1 + a_{12}x_2 + \cdots + a_{1m}x_m \right) \\
+w_2 \left( a_{21}x_2 + a_{22}x_2 + \cdots + a_{2m}x_m \right) \\
+\vdots \\
+w_n \left( a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nm}x_m \right)
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+w_1 b_1 \\ w_2 b_2 \\ \vdots \\ w_n b_n
+\end{array}
+\right)
++
+\left(
+\begin{array}{c}
+w_1 \varepsilon_1 \\ w_2 \varepsilon_2 \\ \vdots \\ w_n \varepsilon_n
+\end{array}
+\right)
+$$
+
+ここで、
+
+$$
+\Mat{W}^{\frac{1}{2}} =
+\left(
+\begin{array}{cccc}
+w_1 & 0 & \cdots & 0 \\
+0 & w_2 & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & w_n
+\end{array}
+\right)
+$$ {#eq:Whalf}
+
+という重み行列を置くと、列ベクトルの式は、
+
+$$
+\Mat{W}^{\frac{1}{2}}
+\left(
+\begin{array}{c}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1m}x_m \\
+a_{21}x_2 + a_{22}x_2 + \cdots + a_{2m}x_m \\
+\vdots \\
+a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nm}x_m
+\end{array}
+\right)
+=
+\Mat{W}^{\frac{1}{2}}
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
++
+\Mat{W}^{\frac{1}{2}}
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+$$
+
+となります。これを
+$\Mat{A}$, $\Vect{x}$, $\Vect{b}$, $\Vect{\varepsilon}$
+で表すと、
+
+$$
+\Mat{W}^{\frac{1}{2}} \Mat{A} \Vect{x}
+=
+\Mat{W}^{\frac{1}{2}} \Vect{b}+
+\Mat{W}^{\frac{1}{2}} \Vect{\varepsilon}
+$$
+
+となります。
+ここで、$\Mat{A}_w = \Mat{W}^{\frac{1}{2}} \Mat{A}$,
+$\Vect{b}_w = \Mat{W}^{\frac{1}{2}} \Vect{b}$,
+$\Vect{\varepsilon}_w = \Mat{W}^{\frac{1}{2}} \Vect{\varepsilon}$
+と置けば、方程式
+
+$$
+\Mat{A}_w \Vect{x} = \Vect{b}_w + \Vect{\varepsilon}_w
+$$ {#eq:weighted}
+
+ができますので、これを重みのない式 ([@eq:least_square])
+と同じように最小二乗法を適用して解きます。
+この際、 $\Vect{\varepsilon}_m$ の各成分
+$w_i \varepsilon_i$ はそれぞれ重み $w_i$ を含んだ形で
+平等に小さくなるように解 $\Vect{x}$ を求めることになります。
+つまり、重み $w_i$ が大きいときは $\varepsilon_i$ が大きく評価され、
+他よりも $\varepsilon_i$ が小さくなるように、
+つまり $i$ 番目の衛星の測定値が重視されるようになります。
+逆に重み $w_i$ が小さいときには $\varepsilon_i$ も小さく評価され、
+他よりも $\varepsilon_i$ が大きくても許容される、
+つまり $i$ 番目の衛星の測定値が軽視されるようになります。
+重みには例えば各測定値の標準偏差 $\sigma_i$ の逆数を使って、
+
+$$
+\Mat{W}^{\frac{1}{2}} =
+\left(
+\begin{array}{cccc}
+\frac{1}{\sigma_1} & 0 & \cdots & 0 \\
+0 & \frac{1}{\sigma_2} & \cdots & 0 \\
+\vdots & \vdots & \ddots & \vdots \\
+0 & 0 & \cdots & \frac{1}{\sigma_n}
+\end{array}
+\right)
+$$
+
+のように設定することになります。
+さて、式 ([@eq:weighted]) は
+式 ([@eq:least_square]) と同じように解くことができるので、
+数学の教科書的には正規方程式を使うことになります。
+重み無しと同様に、
+
+$$
+\frac{\mathrm{d}}{\mathrm{d} \Vect{x}}
+\left\| \Mat{A}_w \Vect{x} - \Vect{b}_w \right\|^2
+=0
+$$
+
+を満たすようにします。これを $\Mat{A}$, $\Vect{b}$ に戻すと、
+
+$$
+\frac{\mathrm{d}}{\mathrm{d} \Vect{x}}
+\left\| \Mat{W}^{\frac{1}{2}} \Mat{A} \Vect{x}
+- \Mat{W}^{\frac{1}{2}} \Vect{b} \right\|^2
+=0
+$$
+
+となるので、ここから重み付きの正規方程式
+
+$$
+\left( \Mat{A}^{\top} \Mat{W} \Mat{A} \right) \Vect{x}
+= \Mat{A}^{\top} \Mat{W} \Vect{b}
+$$
+
+が得られます。
+これを実際に使う場合は
+各測定値の分散 $\sigma_i{}^2$ の逆数を使った対角行列
 
 $$
 \Mat{W} =
@@ -455,23 +750,7 @@ $$
 
 を使えばよいことになります。
 もちろん、数値計算的には正規方程式を使わない方が良いとされます [1-4] 。
-正規方程式を使わない方法としては、各測定値の誤差の標準偏差
-$\sigma_i$
-の逆数を使った対角行列
-
-$$
-\Mat{W}^{\frac{1}{2}} =
-\left(
-\begin{array}{cccc}
-\frac{1}{\sigma_1} & 0 & \cdots & 0 \\
-0 & \frac{1}{\sigma_2} & \cdots & 0 \\
-\vdots & \vdots & \ddots & \vdots \\
-0 & 0 & \cdots & \frac{1}{\sigma_n}
-\end{array}
-\right)
-$$ {#eq:Whalf}
-
-を重み行列として使い、式 ([@eq:deltaX_equation]) の代わりに
+正規方程式を使わない方法の場合は、式 ([@eq:weighted]) から得られる
 
 $$
 \left( \Mat{W}^{\frac{1}{2}} \Mat{J} \right) \Delta \Vect{X} =
@@ -479,14 +758,8 @@ $$
 $$ {#eq:Whalf_equation}
 
 を使い、
-$\Mat{A} = \Mat{W}^{\frac{1}{2}} \Mat{J}$,
-$\Vect{x} = \Delta \Vect{X}$,
-$\Vect{b} = - \Mat{W}^{\frac{1}{2}} \Vect{F}$
-と置いて、
-重み無しと同様の $\Mat{A}$ が縦長でも式
-([@eq:simultaneous_linear_equation])
-の連立一次方程式が解けるアルゴリズムを使い、解 $\Vect{x}$ 、
-つまり $\Delta \Vect{X}$ を得ます [1, 3] 。
+重みが無いときと同様に行列が縦長でも連立一次方程式が解けるアルゴリズムを使い、
+解 $\Delta \Vect{X}$ を得ます [1, 3] 。
 本ライブラリではどちらの方法も使えますが、
 サンプルプログラムは後者の正規方程式を使わない方法を使っています。
 
@@ -555,7 +828,7 @@ std::vector<double> unknown_P
 ```
 
 本ライブラリの計算結果が正しいか確かめるための正解データとする目的で、
-文献\[1\]「（その3）」のプログラムを重み無しに設定して計算した座標です。
+文献[1]「（その3）」のプログラムを重み無しに設定して計算した座標です。
 本ライブラリのニュートン法の計算には使いません。
 
 ### 計算打ち切り条件
@@ -566,7 +839,8 @@ double epsilon {0.0001};
 ```
 
 本ライブラリでニュートン法の計算を打ち切る基準として使用する値です。
-式 ([@eq:F_epsilon]) や式 ([@eq:deltaX_epsilon]) の $\varepsilon$ として使います。
+式 ([@eq:F_epsilon]) や式 ([@eq:deltaX_epsilon]) の
+$\varepsilon_F$, $\varepsilon_{\Delta X}$ として使います。
 
 ### 補助関数
 
@@ -829,7 +1103,7 @@ std::vector<double> unknown_P
 ```
 
 本ライブラリの計算結果が正しいか確かめるための正解データとする目的で、
-文献\[1\]「（その3）」のプログラムを重み付きに設定して計算した座標です。
+文献[1]「（その3）」のプログラムを重み付きに設定して計算した座標です。
 先のサンプルプログラムでは、
 重み無し設定で計算した座標を使っていたため数字が異なります。
 本ライブラリの計算結果が正しいか確かめるための正解データとする目的で使い、
@@ -847,9 +1121,9 @@ std::vector<double> unknown_P
       nm.set_epsilon_F (epsilon);
       nm.set_epsilon_deltaX (epsilon);
       nm.set_weight (W);
-      nm.set_least_square (newton_method::least_square::weighted);
       std::vector<double> initial_value {0.0, 0.0, 0.0, 0.0};
-      solution = nm.solve (initial_value);
+      solution = nm.solve<newton_method::least_square::weighted>
+        (initial_value);
     }
 ```
 
@@ -857,7 +1131,7 @@ std::vector<double> unknown_P
 追加された処理は、
 
 * `nm.set_weight ()` で重み行列を設定
-* `nm.set_least_square ()` で重みをつけた計算をするように設定
+* `nm.solve ()` で重みをつけた計算をするように設定
     + 設定した重み行列を式 ([@eq:Whalf]) とみなして、
     式 ([@eq:Whalf_equation]) の方法で計算する設定になります
 
@@ -919,9 +1193,17 @@ http://doi.org/10.11470/oubutsu1932.46.55
 http://id.nii.ac.jp/1001/00006446/
 ](http://id.nii.ac.jp/1001/00006446/)
 
+# 更新履歴
+
+* 2018-08-24
+    + 最小二乗法の項を大幅に拡充
+    + ライブラリ 2018-08-23.15 版に伴うサンプルプログラム微修正を反映
+* 2017-07-16
+    + 初版
+
 # License
 
-Copyright (C) 2017 Masamichi Hosoda. All rights reserved.
+Copyright (C) 2017, 2018 Masamichi Hosoda. All rights reserved.
 
 License: BSD-2-Clause
 
