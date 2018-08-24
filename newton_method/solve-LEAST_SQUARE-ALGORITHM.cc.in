@@ -41,7 +41,7 @@ namespace newton_method
 {
   template
   std::vector<double>
-  newton_method::solve<least_square::weighted,
-                       algorithm::ColPivHouseholderQR>
+  newton_method::solve<least_square::LEAST_SQUARE,
+                       algorithm::ALGORITHM>
   (const std::vector<double> & /* initial_value */);
 }

@@ -10,7 +10,8 @@ CPPFLAGS_NEWTON_METHOD = -DDEBUG_NEWTON_METHOD
 #
 # Objects and libraries
 #
-OBJS = newton.o \
+OBJS_COMMON = newton.o
+OBJS_SOLVE = \
 	solve-through_pass-ColPivHouseholderQR.o \
 	solve-weighted-ColPivHouseholderQR.o \
 
@@ -41,20 +42,26 @@ CPPFLAGS += -MMD -MP -MF $(@:.o=.d) -MT $@
 CXXFLAGS += $(CXXFLAGS_STD)
 CPPFLAGS += $(CPPFLAGS_EIGEN) $(CPPFLAGS_NEWTON_METHOD)
 
+OBJS = $(OBJS_COMMON) $(OBJS_SOLVE)
+SOURCES_SOLVE = $(OBJS_SOLVE:.o=.cc)
+
 
 #
 # Rules
 #
 
 clean:
-	$(RM) *~ $(OBJS) $(DEPS)
+	$(RM) *~ $(OBJS) $(DEPS) $(SOURCES_SOLVE)
 
 .PHONY: all clean
 
 libnewton.a: $(OBJS)
+	$(RM) $@
 	$(AR) $(ARFLAGS)c $@ $^
 #	$(RANLIB) $@
 
+$(SOURCES_SOLVE): solve-LEAST_SQUARE-ALGORITHM.cc.in
+	./make-explicit-instantiation.sh $@
 
 #
 # Implicit variables (from `make -p`)
