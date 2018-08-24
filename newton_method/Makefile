@@ -11,9 +11,7 @@ CPPFLAGS_NEWTON_METHOD = -DDEBUG_NEWTON_METHOD
 # Objects and libraries
 #
 OBJS_COMMON = newton.o
-OBJS_SOLVE = \
-	solve-through_pass-ColPivHouseholderQR.o \
-	solve-weighted-ColPivHouseholderQR.o \
+include solve.mk
 
 LDLIBS =
 CPPFLAGS_EIGEN = $(shell pkg-config eigen3 --cflags)
@@ -62,6 +60,9 @@ libnewton.a: $(OBJS)
 
 $(SOURCES_SOLVE): solve-LEAST_SQUARE-ALGORITHM.cc.in
 	./make-explicit-instantiation.sh $@
+
+solve.mk:
+	./make-solve-mk.pl > $@
 
 #
 # Implicit variables (from `make -p`)
