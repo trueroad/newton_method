@@ -122,7 +122,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li><a href="#参考文献"><span class="toc-section-number">4</span> 参考文献</a></li>
-<li><a href="#license"><span class="toc-section-number">5</span> License</a></li>
+<li><a href="#更新履歴"><span class="toc-section-number">5</span> 更新履歴</a></li>
+<li><a href="#license"><span class="toc-section-number">6</span> License</a></li>
 </ul>
 </nav>
 <!-- -*- coding: utf-8 -*- -->
@@ -300,7 +301,7 @@ z \\
 \]</span></p>
 <p>となります。</p>
 <h2 id="ニュートン法"><span class="header-section-number">2.3</span> ニュートン法</h2>
-<p>ここでは、ライブラリ本体 <a href="https://github.com/trueroad/newton_method/blob/master/newton.hh">newton.hh</a> / <a href="https://github.com/trueroad/newton_method/blob/master/newton.cc">newton.cc</a> のニュートン法の処理を簡単に紹介します。 ニュートン法では、まず、 解の候補となる初期値 <span class="math inline">\({\boldsymbol{X}}_0\)</span> を適当に決めます。</p>
+<p>ここでは、 <a href="https://github.com/trueroad/newton_method/tree/master/newton_method">ライブラリ本体</a> のニュートン法の処理を簡単に紹介します。 ニュートン法では、まず、 解の候補となる初期値 <span class="math inline">\({\boldsymbol{X}}_0\)</span> を適当に決めます。</p>
 <p><span id="eq:X0"><span class="math display">\[
 {\boldsymbol{X}}_0 =
 \left(
@@ -354,9 +355,9 @@ z^{(k)} \\
 <p><span class="math display">\[
 {\boldsymbol{X}}_{k + 1} = {\boldsymbol{X}}_k + \Delta {\boldsymbol{X}}
 \]</span></p>
-<p>という操作を繰り返し行い、 解の候補を真の解に順次近づけていきます。 このとき、一定の誤差 <span class="math inline">\(\varepsilon\)</span> を決めておき、</p>
+<p>という操作を繰り返し行い、 解の候補を真の解に順次近づけていきます。 このとき、一定の誤差 <span class="math inline">\(\varepsilon_F\)</span> や <span class="math inline">\(\varepsilon_{\Delta X}\)</span> を決めておき、</p>
 <p><span id="eq:F_epsilon"><span class="math display">\[
-\left\| {\boldsymbol{F}} \left( {\boldsymbol{X}}_k \right) \right\| &lt; \varepsilon
+\left\| {\boldsymbol{F}} \left( {\boldsymbol{X}}_k \right) \right\| &lt; \varepsilon_F
 \qquad(9)\]</span></span></p>
 <p>を満たした場合や</p>
 <p><span id="eq:deltaX_epsilon"><span class="math display">\[
@@ -368,20 +369,240 @@ z^{(k)} \\
 \frac{\Delta s}{\Delta S^{(k)}}
 \end{array}
 \right\|
-&lt; \varepsilon
+&lt; \varepsilon_{\Delta X}
 \qquad(10)\]</span></span></p>
 <p>を満たした場合に計算を打ち切り <span class="math inline">\({\boldsymbol{X}}_k\)</span> を近似解として出力します。</p>
 <h2 id="最小二乗法"><span class="header-section-number">2.4</span> 最小二乗法</h2>
-<p>ここでは、ライブラリ本体 <a href="https://github.com/trueroad/newton_method/blob/master/newton.hh">newton.hh</a> / <a href="https://github.com/trueroad/newton_method/blob/master/newton.cc">newton.cc</a> の最小二乗法の処理を簡単に紹介します。 衛星が4個よりも多いとき、ヤコビ行列 <span class="math inline">\({\boldsymbol{J}}\)</span> は縦長となり、 正方行列ではなくなるため、式 (7) が計算できなくなります。 こういうときに、測定値には誤差があることを前提にして、 最小二乗法を使います。</p>
+<p>ここでは、 <a href="https://github.com/trueroad/newton_method/tree/master/newton_method">ライブラリ本体</a> の最小二乗法の処理を簡単に紹介します。 衛星が4個よりも多いとき、ヤコビ行列 <span class="math inline">\({\boldsymbol{J}}\)</span> は縦長となり、 正方行列ではなくなるため、式 (7) を満たす <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> が存在しないということになります。 こういうときに、測定値には誤差があることを前提にして、 最小二乗法を使います。</p>
 <h3 id="重み無し"><span class="header-section-number">2.4.1</span> 重み無し</h3>
-<p>いずれの測定値も誤差が同じである場合や、 誤差の情報が無い場合には、すべて平等に誤差があるとして「重み無し」の 最小二乗法を使います。 数学の教科書的には、式 (7) の代わりに、正規方程式</p>
+<p>いずれの測定値も誤差が同じである場合や、 誤差の情報が無い場合には、すべて平等に誤差があるとして「重み無し」の 最小二乗法を使います。 式 (8) では、 <span class="math inline">\({\boldsymbol{A}}\)</span> が縦長になっているとこの式を満たす <span class="math inline">\({\boldsymbol{x}}\)</span> が存在しません。 そこで、右辺に誤差 <span class="math inline">\({\boldsymbol{\varepsilon}}\)</span> を加えた、</p>
+<p><span id="eq:least_square"><span class="math display">\[
+{\boldsymbol{A}} {\boldsymbol{x}} = {\boldsymbol{b}} + {\boldsymbol{\varepsilon}}
+\qquad(11)\]</span></span></p>
+<p>という式を考えます。 その上で、誤差 <span class="math inline">\({\boldsymbol{\varepsilon}}\)</span> が最小になるように、 <span class="math inline">\({\boldsymbol{\varepsilon}}\)</span> の各成分が平等に小さくなるようにして 解 <span class="math inline">\({\boldsymbol{x}}\)</span> を求める、というのが最小二乗法になります。 具体的には、式を変形すると、</p>
+<p><span class="math display">\[
+{\boldsymbol{A}} {\boldsymbol{x}} - {\boldsymbol{b}} = {\boldsymbol{\varepsilon}}
+\]</span></p>
+<p>となるので、 <span class="math inline">\({\boldsymbol{A}} {\boldsymbol{x}} - {\boldsymbol{b}}\)</span> が最小になるような <span class="math inline">\({\boldsymbol{x}}\)</span> を求めることになります。 そのためには二乗して微分したものがゼロになればよくて、</p>
+<p><span class="math display">\[
+\frac{\mathrm{d}}{\mathrm{d} {\boldsymbol{x}}}
+\left\| {\boldsymbol{A}} {\boldsymbol{x}} - {\boldsymbol{b}} \right\|^2
+=0
+\]</span></p>
+<p>を満たせばよいということになります。 行列やベクトルの微分は少々ややこしいので飛ばしますが、</p>
+<p><span class="math display">\[
+\frac{\mathrm{d}}{\mathrm{d} {\boldsymbol{x}}}
+\left\| {\boldsymbol{A}} {\boldsymbol{x}} - {\boldsymbol{b}} \right\|^2
+= 2 \left( {\boldsymbol{A}}^{\top} {\boldsymbol{A}} {\boldsymbol{x}} - {\boldsymbol{A}}^{\top} {\boldsymbol{b}} \right)
+\]</span></p>
+<p>となるので、ここから数学の教科書的に言う正規方程式</p>
+<p><span class="math display">\[
+{\boldsymbol{A}}^{\top} {\boldsymbol{A}} {\boldsymbol{x}} = {\boldsymbol{A}}^{\top} {\boldsymbol{b}}
+\]</span></p>
+<p>が得られます。これをあてはめて、 式 (7) の代わりに、正規方程式</p>
 <p><span id="eq:normal_equation"><span class="math display">\[
 \left( {\boldsymbol{J}}^{\top} {\boldsymbol{J}} \right) \Delta {\boldsymbol{X}} =
 - {\boldsymbol{J}}^{\top} {\boldsymbol{F}}
-\qquad(11)\]</span></span></p>
-<p>を使えば、重み無しの最小二乗法が適用できます。 ただし、この方法は数値計算的には結果が悪くなるので、 正規方程式を使わない方がよいとされています [1-4] 。 本ライブラリがデフォルトで使用する連立一次方程式を解くアルゴリズムは <span class="math inline">\({\boldsymbol{J}}\)</span> が縦長の時、 つまり式 (8) で <span class="math inline">\({\boldsymbol{A}}\)</span> が 縦長であっても自動的に最小二乗法が適用された解<span class="math inline">\({\boldsymbol{x}}\)</span> が得られるもので、 正規方程式を使わずに <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> が得られます。</p>
+\qquad(12)\]</span></span></p>
+<p>を使えば、重み無しの最小二乗法が適用できます。 ただし、この方法は数値計算的には結果が悪くなるので、 正規方程式を使わない方がよいとされています [1-4] 。 本ライブラリがデフォルトで使用する連立一次方程式を解くアルゴリズムは <span class="math inline">\({\boldsymbol{J}}\)</span> が縦長の時、 つまり式 (11) で <span class="math inline">\({\boldsymbol{A}}\)</span> が 縦長であっても自動的に <span class="math inline">\({\boldsymbol{\varepsilon}}\)</span> が最小の（つまり最小二乗法が適用された）解<span class="math inline">\({\boldsymbol{x}}\)</span> が得られるもので、 正規方程式を使わずに <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> が得られます。</p>
 <h3 id="重み付き"><span class="header-section-number">2.4.2</span> 重み付き</h3>
-<p>各衛星からの測定値について、誤差が既知である場合に「重み付き」の 最小二乗法を使います。 重み付きの正規方程式を使う場合は、 各測定値の誤差の分散 <span class="math inline">\(\sigma_i{}^2\)</span> の逆数を使った対角行列</p>
+<p>各衛星からの測定値について、誤差が既知である場合に「重み付き」の 最小二乗法を使います。 まず、重みのない式 (11) を成分で考えます。 方程式の数が <span class="math inline">\(n\)</span> 個（つまり衛星の数が <span class="math inline">\(n\)</span> 個）、 未知数が <span class="math inline">\(m\)</span> 個（GPS の場合は <span class="math inline">\(m=4\)</span> ）で <span class="math inline">\(n&gt;m\)</span> （縦長）として、</p>
+<p><span class="math display">\[
+{\boldsymbol{A}} =
+\left(
+\begin{array}{cccc}
+a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1m} \\
+a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{n1} &amp; a_{n2} &amp; \cdots &amp; a_{nm}
+\end{array}
+\right)
+,
+{\boldsymbol{x}} =
+\left(
+\begin{array}{c}
+x_1 \\ x_2 \\ \vdots \\ x_m
+\end{array}
+\right)
+,
+{\boldsymbol{b}} =
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
+,
+{\boldsymbol{\varepsilon}} =
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+\]</span></p>
+<p>と置くと、式 (11) は</p>
+<p><span class="math display">\[
+\left(
+\begin{array}{cccc}
+a_{11} &amp; a_{12} &amp; \cdots &amp; a_{1m} \\
+a_{21} &amp; a_{22} &amp; \cdots &amp; a_{2m} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+a_{n1} &amp; a_{n2} &amp; \cdots &amp; a_{nm}
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+x_1 \\ x_2 \\ \vdots \\ x_m
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
++
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+\]</span></p>
+<p>なので、</p>
+<p><span class="math display">\[
+\left(
+\begin{array}{c}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1m}x_m \\
+a_{21}x_2 + a_{22}x_2 + \cdots + a_{2m}x_m \\
+\vdots \\
+a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nm}x_m
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
++
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+\]</span></p>
+<p>となります。これは両辺とも <span class="math inline">\(n\)</span> 次の列ベクトルになっています。 これをさらにバラバラにします。 <span class="math inline">\(i = 1, 2, \dots, n\)</span> とすると、</p>
+<p><span class="math display">\[
+a_{i1}x_1 + a_{i2}x_2 + \cdots + a_{im}x_m = b_i + \varepsilon_i
+\]</span></p>
+<p>となります。 これは <span class="math inline">\(i\)</span> 番目の方程式、つまり <span class="math inline">\(i\)</span> 番目の衛星に関する式になっています。 そこで、ここに <span class="math inline">\(i\)</span> 番目の衛星の測定値の重み <span class="math inline">\(w_i\)</span> を適用します。 両辺に <span class="math inline">\(w_i\)</span> を掛けると、</p>
+<p><span class="math display">\[
+w_i \left(
+a_{i1}x_1 + a_{i2}x_2 + \cdots + a_{im}x_m \right)
+= w_i b_i + w_i \varepsilon_i
+\]</span></p>
+<p>となります。 これを列ベクトルの形にします。</p>
+<p><span class="math display">\[
+\left(
+\begin{array}{c}
+w_1 \left( a_{11}x_1 + a_{12}x_2 + \cdots + a_{1m}x_m \right) \\
+w_2 \left( a_{21}x_2 + a_{22}x_2 + \cdots + a_{2m}x_m \right) \\
+\vdots \\
+w_n \left( a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nm}x_m \right)
+\end{array}
+\right)
+=
+\left(
+\begin{array}{c}
+w_1 b_1 \\ w_2 b_2 \\ \vdots \\ w_n b_n
+\end{array}
+\right)
++
+\left(
+\begin{array}{c}
+w_1 \varepsilon_1 \\ w_2 \varepsilon_2 \\ \vdots \\ w_n \varepsilon_n
+\end{array}
+\right)
+\]</span></p>
+<p>ここで、</p>
+<p><span id="eq:Whalf"><span class="math display">\[
+{\boldsymbol{W}}^{\frac{1}{2}} =
+\left(
+\begin{array}{cccc}
+w_1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; w_2 &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; w_n
+\end{array}
+\right)
+\qquad(13)\]</span></span></p>
+<p>という重み行列を置くと、列ベクトルの式は、</p>
+<p><span class="math display">\[
+{\boldsymbol{W}}^{\frac{1}{2}}
+\left(
+\begin{array}{c}
+a_{11}x_1 + a_{12}x_2 + \cdots + a_{1m}x_m \\
+a_{21}x_2 + a_{22}x_2 + \cdots + a_{2m}x_m \\
+\vdots \\
+a_{n1}x_1 + a_{n2}x_2 + \cdots + a_{nm}x_m
+\end{array}
+\right)
+=
+{\boldsymbol{W}}^{\frac{1}{2}}
+\left(
+\begin{array}{c}
+b_1 \\ b_2 \\ \vdots \\ b_n
+\end{array}
+\right)
++
+{\boldsymbol{W}}^{\frac{1}{2}}
+\left(
+\begin{array}{c}
+\varepsilon_1 \\ \varepsilon_2 \\ \vdots \\ \varepsilon_n
+\end{array}
+\right)
+\]</span></p>
+<p>となります。これを <span class="math inline">\({\boldsymbol{A}}\)</span>, <span class="math inline">\({\boldsymbol{x}}\)</span>, <span class="math inline">\({\boldsymbol{b}}\)</span>, <span class="math inline">\({\boldsymbol{\varepsilon}}\)</span> で表すと、</p>
+<p><span class="math display">\[
+{\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{A}} {\boldsymbol{x}}
+=
+{\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{b}}+
+{\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{\varepsilon}}
+\]</span></p>
+<p>となります。 ここで、<span class="math inline">\({\boldsymbol{A}}_w = {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{A}}\)</span>, <span class="math inline">\({\boldsymbol{b}}_w = {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{b}}\)</span>, <span class="math inline">\({\boldsymbol{\varepsilon}}_w = {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{\varepsilon}}\)</span> と置けば、方程式</p>
+<p><span id="eq:weighted"><span class="math display">\[
+{\boldsymbol{A}}_w {\boldsymbol{x}} = {\boldsymbol{b}}_w + {\boldsymbol{\varepsilon}}_w
+\qquad(14)\]</span></span></p>
+<p>ができますので、これを重みのない式 (11) と同じように最小二乗法を適用して解きます。 この際、 <span class="math inline">\({\boldsymbol{\varepsilon}}_m\)</span> の各成分 <span class="math inline">\(w_i \varepsilon_i\)</span> はそれぞれ重み <span class="math inline">\(w_i\)</span> を含んだ形で 平等に小さくなるように解 <span class="math inline">\({\boldsymbol{x}}\)</span> を求めることになります。 つまり、重み <span class="math inline">\(w_i\)</span> が大きいときは <span class="math inline">\(\varepsilon_i\)</span> が大きく評価され、 他よりも <span class="math inline">\(\varepsilon_i\)</span> が小さくなるように、 つまり <span class="math inline">\(i\)</span> 番目の衛星の測定値が重視されるようになります。 逆に重み <span class="math inline">\(w_i\)</span> が小さいときには <span class="math inline">\(\varepsilon_i\)</span> も小さく評価され、 他よりも <span class="math inline">\(\varepsilon_i\)</span> が大きくても許容される、 つまり <span class="math inline">\(i\)</span> 番目の衛星の測定値が軽視されるようになります。 重みには例えば各測定値の標準偏差 <span class="math inline">\(\sigma_i\)</span> の逆数を使って、</p>
+<p><span class="math display">\[
+{\boldsymbol{W}}^{\frac{1}{2}} =
+\left(
+\begin{array}{cccc}
+\frac{1}{\sigma_1} &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; \frac{1}{\sigma_2} &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+0 &amp; 0 &amp; \cdots &amp; \frac{1}{\sigma_n}
+\end{array}
+\right)
+\]</span></p>
+<p>のように設定することになります。 さて、式 (14) は 式 (11) と同じように解くことができるので、 数学の教科書的には正規方程式を使うことになります。 重み無しと同様に、</p>
+<p><span class="math display">\[
+\frac{\mathrm{d}}{\mathrm{d} {\boldsymbol{x}}}
+\left\| {\boldsymbol{A}}_w {\boldsymbol{x}} - {\boldsymbol{b}}_w \right\|^2
+=0
+\]</span></p>
+<p>を満たすようにします。これを <span class="math inline">\({\boldsymbol{A}}\)</span>, <span class="math inline">\({\boldsymbol{b}}\)</span> に戻すと、</p>
+<p><span class="math display">\[
+\frac{\mathrm{d}}{\mathrm{d} {\boldsymbol{x}}}
+\left\| {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{A}} {\boldsymbol{x}}
+- {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{b}} \right\|^2
+=0
+\]</span></p>
+<p>となるので、ここから重み付きの正規方程式</p>
+<p><span class="math display">\[
+\left( {\boldsymbol{A}}^{\top} {\boldsymbol{W}} {\boldsymbol{A}} \right) {\boldsymbol{x}}
+= {\boldsymbol{A}}^{\top} {\boldsymbol{W}} {\boldsymbol{b}}
+\]</span></p>
+<p>が得られます。 これを実際に使う場合は 各測定値の分散 <span class="math inline">\(\sigma_i{}^2\)</span> の逆数を使った対角行列</p>
 <p><span class="math display">\[
 {\boldsymbol{W}} =
 \left(
@@ -393,29 +614,17 @@ z^{(k)} \\
 \end{array}
 \right)
 \]</span></p>
-<p>を重み行列として使い、 式 (11) の代わりに重み付きの正規方程式</p>
+<p>を重み行列として使い、 式 (12) の代わりに重み付きの正規方程式</p>
 <p><span class="math display">\[
 \left( {\boldsymbol{J}}^{\top} {\boldsymbol{W}} {\boldsymbol{J}} \right) \Delta {\boldsymbol{X}} =
 - {\boldsymbol{J}}^{\top} {\boldsymbol{W}} {\boldsymbol{F}}
 \]</span></p>
-<p>を使えばよいことになります。 もちろん、数値計算的には正規方程式を使わない方が良いとされます [1-4] 。 正規方程式を使わない方法としては、各測定値の誤差の標準偏差 <span class="math inline">\(\sigma_i\)</span> の逆数を使った対角行列</p>
-<p><span id="eq:Whalf"><span class="math display">\[
-{\boldsymbol{W}}^{\frac{1}{2}} =
-\left(
-\begin{array}{cccc}
-\frac{1}{\sigma_1} &amp; 0 &amp; \cdots &amp; 0 \\
-0 &amp; \frac{1}{\sigma_2} &amp; \cdots &amp; 0 \\
-\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
-0 &amp; 0 &amp; \cdots &amp; \frac{1}{\sigma_n}
-\end{array}
-\right)
-\qquad(12)\]</span></span></p>
-<p>を重み行列として使い、式 (7) の代わりに</p>
+<p>を使えばよいことになります。 もちろん、数値計算的には正規方程式を使わない方が良いとされます [1-4] 。 正規方程式を使わない方法の場合は、式 (14) から得られる</p>
 <p><span id="eq:Whalf_equation"><span class="math display">\[
 \left( {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{J}} \right) \Delta {\boldsymbol{X}} =
 - {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{F}}
-\qquad(13)\]</span></span></p>
-<p>を使い、 <span class="math inline">\({\boldsymbol{A}} = {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{J}}\)</span>, <span class="math inline">\({\boldsymbol{x}} = \Delta {\boldsymbol{X}}\)</span>, <span class="math inline">\({\boldsymbol{b}} = - {\boldsymbol{W}}^{\frac{1}{2}} {\boldsymbol{F}}\)</span> と置いて、 重み無しと同様の <span class="math inline">\({\boldsymbol{A}}\)</span> が縦長でも式 (8) の連立一次方程式が解けるアルゴリズムを使い、解 <span class="math inline">\({\boldsymbol{x}}\)</span> 、 つまり <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> を得ます [1, 3] 。 本ライブラリではどちらの方法も使えますが、 サンプルプログラムは後者の正規方程式を使わない方法を使っています。</p>
+\qquad(15)\]</span></span></p>
+<p>を使い、 重みが無いときと同様に行列が縦長でも連立一次方程式が解けるアルゴリズムを使い、 解 <span class="math inline">\(\Delta {\boldsymbol{X}}\)</span> を得ます [1, 3] 。 本ライブラリではどちらの方法も使えますが、 サンプルプログラムは後者の正規方程式を使わない方法を使っています。</p>
 <h1 id="サンプルプログラム"><span class="header-section-number">3</span> サンプルプログラム</h1>
 <p>サンプルプログラムで使用している座標、距離、重み等のデータについては、 ここでは中身を示すだけにとどめ詳しい説明をしません。 これらの詳細は <a href="https://github.com/trueroad/newton_method/blob/master/doc/sample-data.ja.md">サンプルプログラムのデータについて</a> をご覧ください。</p>
 <h2 id="最小二乗法を使わないサンプル"><span class="header-section-number">3.1</span> 最小二乗法を使わないサンプル</h2>
@@ -450,7 +659,7 @@ z^{(k)} \\
 <h3 id="計算打ち切り条件"><span class="header-section-number">3.1.4</span> 計算打ち切り条件</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Error epsilon (0.1 mm)</span>
 <span class="dt">double</span> epsilon {<span class="fl">0.0001</span>};</code></pre></div>
-<p>本ライブラリでニュートン法の計算を打ち切る基準として使用する値です。 式 (9) や式 (10) の <span class="math inline">\(\varepsilon\)</span> として使います。</p>
+<p>本ライブラリでニュートン法の計算を打ち切る基準として使用する値です。 式 (9) や式 (10) の <span class="math inline">\(\varepsilon_F\)</span>, <span class="math inline">\(\varepsilon_{\Delta X}\)</span> として使います。</p>
 <h3 id="補助関数"><span class="header-section-number">3.1.5</span> 補助関数</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="kw">inline</span> <span class="dt">double</span> square (<span class="dt">double</span> x)
 {
@@ -602,7 +811,7 @@ Error distance:
           <span class="fl">0.30759766</span>,
           <span class="fl">0.31046259</span>,
 };</code></pre></div>
-<p>式 (12) の重み行列 <span class="math inline">\(W^{\frac{1}{2}}\)</span> です。 実際には行列なのですが、対角行列なので、 その成分を並べた <code>std::vector&lt;double&gt;</code> を用意します。</p>
+<p>式 (13) の重み行列 <span class="math inline">\(W^{\frac{1}{2}}\)</span> です。 実際には行列なのですが、対角行列なので、 その成分を並べた <code>std::vector&lt;double&gt;</code> を用意します。</p>
 <h3 id="受信機座標正解データ-1"><span class="header-section-number">3.3.2</span> 受信機座標（正解データ）</h3>
 <div class="sourceCode"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span class="co">// Receiver position (actually unknown)</span>
 <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; unknown_P
@@ -620,16 +829,16 @@ Error distance:
       nm.set_epsilon_F (epsilon);
       nm.set_epsilon_deltaX (epsilon);
       nm.set_weight (W);
-      nm.set_least_square (newton_method::least_square::weighted);
       <span class="bu">std::</span>vector&lt;<span class="dt">double</span>&gt; initial_value {<span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>, <span class="fl">0.0</span>};
-      solution = nm.solve (initial_value);
+      solution = nm.solve&lt;newton_method::least_square::weighted&gt;
+        (initial_value);
     }</code></pre></div>
 <p>重みをつけた計算をしています。 追加された処理は、</p>
 <ul>
 <li><code>nm.set_weight ()</code> で重み行列を設定</li>
-<li><code>nm.set_least_square ()</code> で重みをつけた計算をするように設定
+<li><code>nm.solve ()</code> で重みをつけた計算をするように設定
 <ul>
-<li>設定した重み行列を式 (12) とみなして、 式 (13) の方法で計算する設定になります</li>
+<li>設定した重み行列を式 (13) とみなして、 式 (15) の方法で計算する設定になります</li>
 </ul></li>
 </ul>
 <p>の2つだけです。</p>
@@ -648,8 +857,20 @@ Error distance:
 <p>[2] 小柳義夫. ｢最小二乗法」事始め. 応用数理, Vol. 26 (2016) No. 1, pp. 39-42. <a href="http://doi.org/10.11540/bjsiam.26.1_39" class="uri">http://doi.org/10.11540/bjsiam.26.1_39</a></p>
 <p>[3] 小柳義夫. 最小2乗法における新しい手法. 応用物理, Vol. 46 (1977) No. 1, pp. 55-60. <a href="http://doi.org/10.11470/oubutsu1932.46.55" class="uri">http://doi.org/10.11470/oubutsu1932.46.55</a></p>
 <p>[4] 小柳義夫. 最小二乗法の新しいアルゴリズム. 情報処理, Vol. 23 (1982) No. 2, pp. 99-108. <a href="http://id.nii.ac.jp/1001/00006446/" class="uri">http://id.nii.ac.jp/1001/00006446/</a></p>
-<h1 id="license"><span class="header-section-number">5</span> License</h1>
-<p>Copyright (C) 2017 Masamichi Hosoda. All rights reserved.</p>
+<h1 id="更新履歴"><span class="header-section-number">5</span> 更新履歴</h1>
+<ul>
+<li>2018-08-24
+<ul>
+<li>最小二乗法の項を大幅に拡充</li>
+<li>ライブラリ 2018-08-23.15 版に伴うサンプルプログラム微修正を反映</li>
+</ul></li>
+<li>2017-07-16
+<ul>
+<li>初版</li>
+</ul></li>
+</ul>
+<h1 id="license"><span class="header-section-number">6</span> License</h1>
+<p>Copyright (C) 2017, 2018 Masamichi Hosoda. All rights reserved.</p>
 <p>License: BSD-2-Clause</p>
 <p><a href="https://github.com/trueroad/newton_method/blob/master/LICENSE">LICENSE</a> をご覧ください。</p>
 </body>
