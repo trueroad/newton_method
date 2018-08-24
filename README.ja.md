@@ -52,7 +52,7 @@ https://github.com/trueroad/newton_method
 必要に応じて書き換えてください。
 
 * C++11 に対応したコンパイラが必要です。
-    + g++ 5.4.0 等で動作確認しています。
+    + g++ 7.3.0 等で動作確認しています。
         - 添付の
         [Makefile](./Makefile) と
         [newton_method/Makefile](./newton_method/Makefile)
@@ -63,7 +63,7 @@ https://github.com/trueroad/newton_method
     C++11が使えるようにしてください。
 * [Eigen](https://eigen.tuxfamily.org/)
 が必要になります。
-    + バージョン 3.2.5 や 3.3.4 で動作確認しています。
+    + バージョン 3.3.4 で動作確認しています。
     + eigen3 / libeigen3-dev / eigen3-devel
     等のパッケージがインストールしてあれば
     （pkg-config で eigen3 が見つかるようになっていれば）
@@ -75,11 +75,6 @@ https://github.com/trueroad/newton_method
     つけてあり、計算の途中経過を表示するようになっています。
     + 途中経過の表示が必要なければ、このオプションを削除してください。
 
-なお、私の環境では Eigen 3.2.5 だと
-[newton_method/newton.cc](./newton_method/newton.cc)
-のコンパイル中に警告が出ます。
-Eigen 3.3.4 なら警告がでません。
-
 ## 参考文献
 
 [1]
@@ -89,9 +84,36 @@ Eigen 3.3.4 なら警告がでません。
 http://www.enri.go.jp/~fks442/K_MUSEN/
 ](http://www.enri.go.jp/~fks442/K_MUSEN/).
 
+## 更新履歴
+
+* 2018-08-24
+    + [
+サンプルプログラムの計算式について
+](https://trueroad.github.io/newton_method/doc/sample-formula.ja.html) 更新
+          - 最小二乗法の項を大幅に拡充
+          - ライブラリ 2018-08-23.15 版に伴うサンプルプログラム微修正を反映
+* 2018-08-23
+    + ライブラリ 2018-08-23.15 版
+        - アルゴリズムや最小二乗法処理の指定方法を変更
+        - テンプレート化およびソースファイル分割により
+          使用しないアルゴリズムをリンクしないで済むようになり、
+          実行ファイルサイズの大幅減を実現
+* 2017-07-20
+    + ライブラリ 2017-07-20.13 版
+        - イテレーション回数超過時に例外発生するか否か指定可に
+        - イテレーション完了ステータス取得可に
+* 2017-07-16
+    + [
+サンプルプログラムの計算式について
+](https://trueroad.github.io/newton_method/doc/sample-formula.ja.html) 追加
+* 2017-07-01
+    + [サンプルプログラムのデータについて](./doc/sample-data.ja.md) 追加
+* 2017-06-24
+    + ライブラリ 2017-06-24.16 版（初版）
+
 ## License
 
-Copyright (C) 2017 Masamichi Hosoda. All rights reserved.
+Copyright (C) 2017, 2018 Masamichi Hosoda. All rights reserved.
 
 License: BSD-2-Clause
 

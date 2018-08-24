@@ -52,14 +52,14 @@ are contained,
 so please rewrite if necessary.
 
 * C++11 or later compiler is required.
-    + g++ 5.4.0 can compile it.
+    + g++ 7.3.0 etc. can compile it.
         - In the [Makefile](./Makefile) and
         [newton_method/Makefile](./newton_method/Makefile) ,
         compiler option `-std=c++11` is used.
     + If you would like another compiler,
     please rewrite the compiler option as appropriate for C++11 can be used.
 * [Eigen](https://eigen.tuxfamily.org/) is required.
-    + Eigen 3.2.5 and 3.3.4 etc. can be used.
+    + Eigen 3.3.4 etc. can be used.
     + If the package such as eigen3 / libeigen3-dev / eigen3-devel etc.
     is installed (that is, pkg-config can find eigen3),
     you can build it as it is with the `make` command.
@@ -70,11 +70,6 @@ so please rewrite if necessary.
     + The compile option `-DDEBUG_NEWTON_METHOD` is enabled.
     It shows the progress of the calculation.
     + Please remove this option if you would not like to show the progress.
-
-Note, in my environment,
-g++ with Eigen 3.2.5 shows some warnings
-while compiling [newton_method/newton.cc](./newton_method/newton.cc).
-g++ with Eigen 3.3.4 does not show any warnings.
 
 ## References
 
@@ -88,7 +83,7 @@ http://www.enri.go.jp/~fks442/K_MUSEN/
 
 ## License
 
-Copyright (C) 2017 Masamichi Hosoda. All rights reserved.
+Copyright (C) 2017, 2018 Masamichi Hosoda. All rights reserved.
 
 License: BSD-2-Clause
 
