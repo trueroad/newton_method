@@ -5,4 +5,5 @@
 OBJS_SOLVE = \
 	solve-through_pass-ColPivHouseholderQR.o \
 	solve-weighted-ColPivHouseholderQR.o \
+	solve_fast-weighted-ColPivHouseholderQR.o \
 

@@ -2,7 +2,7 @@
 // Newton's method library to solve simultaneous equations 2018-08-23.15
 // https://github.com/trueroad/newton_method
 //
-// solve-LEAST_SQUARE-ALGORITHM.cc: Explicit instantiation
+// solve_fast-LEAST_SQUARE-ALGORITHM.cc: Explicit instantiation
 //
 // Copyright (C) 2017, 2018 Masamichi Hosoda.
 // All rights reserved.
@@ -41,7 +41,8 @@ namespace newton_method
 {
   template
   std::vector<double>
-  newton_method::solve<least_square::LEAST_SQUARE,
-                       algorithm::ALGORITHM>
-  (const std::vector<double> & /* initial_value */);
+  newton_method::solve_fast<least_square::LEAST_SQUARE,
+                            algorithm::ALGORITHM>
+  (const std::vector<double> & /* initial_value */,
+   int /* number_of_equations */);
 }
