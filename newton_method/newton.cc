@@ -63,6 +63,14 @@ namespace newton_method
     pimpl_->set_function (calc_function, calc_jacobian_matrix);
   }
 
+  void
+  newton_method::set_function_fast
+  (std::function<void (double *, double *, const double *)>
+   calc_fast_f_and_j) noexcept
+  {
+    pimpl_->set_function_fast (calc_fast_f_and_j);
+  }
+
   void newton_method::set_max_iteration (int k) noexcept
   {
     pimpl_->set_max_iteration (k);

@@ -79,6 +79,10 @@ namespace newton_method
                   std::function<std::vector<std::vector<double>>
                     (const std::vector<double> &)> /* calc_jacobian_matrix */
                   ) noexcept;
+    void
+    set_function_fast
+    (std::function<void (double *, double *, const double *)>
+     /* calc_fast_f_and_j */ ) noexcept;
 
     // Set iteration parameters
     void set_max_iteration (int /* k */) noexcept;

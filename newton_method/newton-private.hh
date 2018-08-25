@@ -61,6 +61,10 @@ namespace newton_method
                   std::function<std::vector<std::vector<double>>
                     (const std::vector<double> &)> /* calc_jacobian_matrix */
                   ) noexcept;
+    inline void
+    set_function_fast
+    (std::function<void (double *, double *, const double *)>
+     /* calc_fast_f_and_j */ ) noexcept;
 
     // Set iteration parameters
     void set_max_iteration (int k) noexcept
@@ -120,6 +124,8 @@ namespace newton_method
     std::function<std::vector<std::vector<double>>
                               (const std::vector<double> &)> j_;
     bool bset_ = false;
+    std::function<void (double *, double *, const double *)> fast_fj_;
+    bool bset_fast_fj_ = false;
 
     // Iteration parameters
     int max_iteration_ = 256;
@@ -155,6 +161,14 @@ namespace newton_method
     f_ = calc_function;
     j_ = calc_jacobian_matrix;
     bset_ = true;
+  }
+
+  inline void newton_method::impl::set_function_fast
+  (std::function<void (double *, double *, const double *)>
+   calc_fast_f_and_j) noexcept
+  {
+    fast_fj_ = calc_fast_f_and_j;
+    bset_fast_fj_ = true;
   }
 
   inline void
