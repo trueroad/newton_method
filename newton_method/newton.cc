@@ -1,5 +1,5 @@
 //
-// Newton's method library to solve simultaneous equations 2018-08-23.15
+// Newton's method library to solve simultaneous equations 2018-08-26.02
 // https://github.com/trueroad/newton_method
 //
 // newton.cc: Inner common implementation

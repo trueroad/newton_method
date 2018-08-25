@@ -1,5 +1,5 @@
 //
-// Newton's method library to solve simultaneous equations 2018-08-23.15
+// Newton's method library to solve simultaneous equations 2018-08-26.02
 // https://github.com/trueroad/newton_method
 //
 // sample-weighted.cc:
@@ -136,12 +136,12 @@ int main (void)
 {
   std::cout
     << "Newton's method library to solve simultaneous equations" << std::endl
-    << "https://github.com/trueroad/newton_method/" << std::endl
+    << "https://github.com/trueroad/newton_method" << std::endl
     << std::endl
-    << "Sample: Position calculation like GPS/GNSS receiver" << std::endl
-    << "        (overdetermined system, weighted)" << std::endl
+    << "Sample for position calculation like GPS/GNSS receiver" << std::endl
+    << "(overdetermined system, weighted)" << std::endl
     << std::endl
-    << "Copyright (C) 2017 Masamichi Hosoda. All rights reserved."
+    << "Copyright (C) 2017, 2018 Masamichi Hosoda. All rights reserved."
     << std::endl << std::endl;
 
   std::cout << std::fixed;
