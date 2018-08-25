@@ -44,4 +44,10 @@ namespace newton_method
   newton_method::solve<least_square::LEAST_SQUARE,
                        algorithm::ALGORITHM>
   (const std::vector<double> & /* initial_value */);
+  template
+  std::vector<double>
+  newton_method::solve_fast<least_square::LEAST_SQUARE,
+                            algorithm::ALGORITHM>
+  (const std::vector<double> & /* initial_value */,
+   int /* number_of_equations */);
 }

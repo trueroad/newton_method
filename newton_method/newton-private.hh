@@ -91,6 +91,10 @@ namespace newton_method
     template <least_square LEAST_SQUARE, algorithm ALGORITHM>
     std::vector<double>
     solve (const std::vector<double> & /* initial_value */);
+    template <least_square LEAST_SQUARE, algorithm ALGORITHM>
+    std::vector<double>
+    solve_fast (const std::vector<double> & /* initial_value */,
+                int /* number_of_equations */);
 
     // Get completion status
     completion_status get_completion_status () noexcept
@@ -105,12 +109,17 @@ namespace newton_method
   private:
     // Inner
     inline void check_args (void);
+    inline void check_args_fast (int /* number_of_unknowns */,
+                                 int /* number_of_equations */);
     template <typename T>
     void start_iteration_k (int /* k */, const T & /* X */);
     inline Eigen::VectorXd calc_F (const std::vector<double> & /* x */);
     template <typename T_F>
     bool check_F (const T_F & /* F */);
     inline Eigen::MatrixXd calc_J (const std::vector<double> & /* x */);
+    inline void calc_fast_FJ (std::vector<double> & /* f */,
+                              std::vector<double> & /* j */,
+                              const std::vector<double> & /* x */);
     template <least_square LEAST_SQUARE, algorithm ALGORITHM,
               typename T_F, typename T_J>
     Eigen::VectorXd calc_deltaX (const T_F &F, const T_J &J);
@@ -197,6 +206,26 @@ namespace newton_method
       }
   }
 
+  inline void
+  newton_method::impl::check_args_fast (int number_of_unknowns,
+                                        int number_of_equations)
+  {
+    if ( !bset_fast_fj_ )
+      {
+        throw std::invalid_argument ("Function is not set.");
+      }
+    if ( max_iteration_ <= 0 )
+      {
+        throw std::invalid_argument
+          ("Max iteration must be greater than 0.");
+      }
+    if (number_of_unknowns > number_of_equations)
+      {
+        throw std::invalid_argument
+          ("Number of equations must be at least number of unknowns.");
+      }
+  }
+
   template <typename T>
   void
   newton_method::impl::start_iteration_k (int k, const T &X)
@@ -273,6 +302,14 @@ namespace newton_method
 #endif
 
     return J;
+  }
+
+  inline void
+  newton_method::impl::calc_fast_FJ (std::vector<double> &f,
+                                     std::vector<double> &j,
+                                     const std::vector<double> &x)
+  {
+    fast_fj_ (f.data (), j.data (), x.data ());
   }
 
   template <least_square LEAST_SQUARE, algorithm ALGORITHM,
@@ -436,6 +473,52 @@ namespace newton_method
     exceed_max_iteration ();
     return xv;
   }
+
+  template <least_square LEAST_SQUARE, algorithm ALGORITHM>
+  std::vector<double>
+  newton_method::impl::solve_fast (const std::vector<double> &initial_value,
+                                   int number_of_equations)
+  {
+    check_args_fast (initial_value.size (), number_of_equations);
+
+    // F and fv is linked. When F is updated, fv is also updated.
+    std::vector<double> fv (number_of_equations);
+    Eigen::Map<Eigen::VectorXd> F {fv.data (), static_cast<int> (fv.size ())};
+
+    // J and jv is linked. When J is updated, jv is also updated.
+    std::vector<double> jv (initial_value.size () * number_of_equations);
+    Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic,
+                             Eigen::RowMajor>>
+      J {jv.data (), number_of_equations,
+         static_cast<int> (initial_value.size ())};
+
+    // X and xv is linked. When X is updated, xv is also updated.
+    std::vector<double> xv {initial_value};
+    Eigen::Map<Eigen::VectorXd> X {xv.data (), static_cast<int> (xv.size ())};
+
+    // Iteration
+    for ( int k = 0; k < max_iteration_; ++k )
+      {
+        start_iteration_k (k, X);
+
+        calc_fast_FJ (fv, jv, xv); // F and J are also updated.
+#ifdef DEBUG_NEWTON_METHOD
+    std::cout << "F =" << std::endl << F << std::endl
+              << "J =" << std::endl << J << std::endl;
+#endif
+        if (check_F (F))
+          return xv;
+
+        auto deltaX {calc_deltaX<LEAST_SQUARE, ALGORITHM> (F, J)};
+
+        X = X + deltaX;  // xv is also updated.
+        if (check_deltaX (X, deltaX))
+          return xv;
+      }
+
+    exceed_max_iteration ();
+    return xv;
+  }
 }
 
 //
@@ -448,6 +531,15 @@ namespace newton_method
   newton_method::solve (const std::vector<double> &initial_value)
   {
     return pimpl_->solve<LEAST_SQUARE, ALGORITHM> (initial_value);
+  }
+
+  template <least_square LEAST_SQUARE, algorithm ALGORITHM>
+  std::vector<double>
+  newton_method::solve_fast (const std::vector<double> &initial_value,
+                             int number_of_equations)
+  {
+    return pimpl_->solve_fast<LEAST_SQUARE, ALGORITHM> (initial_value,
+                                                        number_of_equations);
   }
 }
 

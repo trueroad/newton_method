@@ -98,6 +98,11 @@ namespace newton_method
               algorithm ALGORITHM = algorithm::ColPivHouseholderQR>
     std::vector<double>
     solve (const std::vector<double> & /* initial_value */);
+    template <least_square LEAST_SQUARE = least_square::through_pass,
+              algorithm ALGORITHM = algorithm::ColPivHouseholderQR>
+    std::vector<double>
+    solve_fast (const std::vector<double> & /* initial_value */,
+                int /* number_of_equations */);
 
     // Get status
     completion_status get_completion_status () noexcept;
