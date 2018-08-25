@@ -104,14 +104,15 @@ namespace newton_method
     template <typename T>
     void start_iteration_k (int /* k */, const T & /* X */);
     inline Eigen::VectorXd calc_F (const std::vector<double> & /* x */);
-    inline bool check_F (const Eigen::VectorXd & /* F */);
+    template <typename T_F>
+    bool check_F (const T_F & /* F */);
     inline Eigen::MatrixXd calc_J (const std::vector<double> & /* x */);
     template <least_square LEAST_SQUARE, algorithm ALGORITHM,
               typename T_F, typename T_J>
     Eigen::VectorXd calc_deltaX (const T_F &F, const T_J &J);
-    template <typename T_X>
+    template <typename T_X, typename T_dX>
     bool check_deltaX (const T_X & /* X */,
-                       const Eigen::VectorXd & /* deltaX */);
+                       const T_dX & /* deltaX */);
     inline void exceed_max_iteration (void);
 
     // Function
@@ -208,8 +209,9 @@ namespace newton_method
     return F;
   }
 
-  inline bool
-  newton_method::impl::check_F (const Eigen::VectorXd &F)
+  template <typename T_F>
+  bool
+  newton_method::impl::check_F (const T_F &F)
   {
 #ifdef DEBUG_NEWTON_METHOD
     std::cout
@@ -332,10 +334,10 @@ namespace newton_method
     return deltaX;
   }
 
-  template <typename T_X>
+  template <typename T_X, typename T_dX>
   bool
   newton_method::impl::check_deltaX (const T_X &X,
-                                     const Eigen::VectorXd &deltaX)
+                                     const T_dX &deltaX)
   {
     Eigen::VectorXd dX_X {deltaX.array () / X.array ()};
 #ifdef DEBUG_NEWTON_METHOD
