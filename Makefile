@@ -10,16 +10,9 @@ CXXFLAGS += $(STD_CXXFLAGS)
 newton_method/libnewton.a:
 	$(MAKE) -C newton_method
 
-sample: sample.o newton_method/libnewton.a
-	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
+%: %.cc
 
-sample-weighted: sample-weighted.o newton_method/libnewton.a
-	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
-
-sample-non_weighted: sample-non_weighted.o newton_method/libnewton.a
-	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
-
-sample-fast: sample-fast.o newton_method/libnewton.a
+%: %.o newton_method/libnewton.a
 	$(LINK.cc) $^ $(LOADLIBES) $(LDLIBS) -o $@
 
 clean:
